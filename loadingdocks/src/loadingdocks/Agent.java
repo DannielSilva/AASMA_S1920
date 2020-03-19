@@ -3,7 +3,7 @@ package loadingdocks;
 import java.awt.Color;
 import java.awt.Point;
 import loadingdocks.Block.Shape;
-
+import java.util.Random;
 /**
  * Agent behavior
  * @author Rui Henriques
@@ -23,9 +23,18 @@ public class Agent extends Entity {
 	 **********************/
 	
 	public void agentDecision() {
-	  if(isFreeCell()) moveAhead();
-	  else if(load.equals(null) &&  next_cell_box() && next_cell_ramp()) pickup();
-	  
+    if (isWall()) rotate();
+	  else if(isFreeCell()) {
+      boolean val = new Random().nextInt(25)==0;
+      if (val) {
+        rotate();
+      }
+      else
+      moveAhead();
+    }
+	  else if(load == null &&  next_cell_box() && next_cell_ramp()) pickup();
+    else if(next_cell_shelf() && hasBox() && (shelfcolor() == boxcolor()) && !next_cell_box()) drop();
+    else if (!isFreeCell()) rotate();
 	}
 	
 	/********************/
@@ -35,7 +44,7 @@ public class Agent extends Entity {
 	/* Check if the cell ahead is floor (which means not a wall, not a shelf nor a ramp) and there are any robot there */
 	protected boolean isFreeCell() {
 	  Point ahead = aheadPosition();
-	  return Board.getBlock(ahead).shape.equals(Shape.free);
+	  return Board.getBlock(ahead).shape.equals(Shape.free) && Board.getEntity(ahead) == null;
 	}
 
 	/* Check if the cell ahead is a wall */
@@ -46,16 +55,18 @@ public class Agent extends Entity {
 
 	/* Check if agent is carrying box */
 	protected boolean hasBox() {
-		return load.equals(null);
+		return load != null;
 	}
 
 	/* Check if next cell has box */
 	protected boolean next_cell_box() {
 		Point ahead = aheadPosition();
-		Box b;
+		//Box b;
 		Entity p = Board.getEntity(ahead);
-		test = new Box(p.point,p.color);
-		return b.isInstance(test);
+		//test = new Box(p.point,p.color);
+		//return b.isInstance(test);
+		return p instanceof Box;
+
 	}
 
 	/* Check if next cell is a shelf */
@@ -107,14 +118,16 @@ public class Agent extends Entity {
 		Entity p = Board.getEntity(ahead);
 
 		load = new Box(p.point,p.color);
-		Board.removeEntity(ahead);
+    Board.removeEntity(ahead);
+    System.out.println("PEGUEII");
 	}
 
 	/* Agent drop box */
 	public void drop() {
 		Point ahead = aheadPosition();
 		Board.insertEntity(load, ahead);
-		load = null;
+    load = null;
+    System.out.println("DROPEII");
 	}
 
 	/**********************/

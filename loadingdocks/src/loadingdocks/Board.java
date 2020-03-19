@@ -52,7 +52,7 @@ public class Board {
 				board[pshelves[k].x+i][pshelves[k].y] = new Block(Shape.shelf, colors[k]);
 		
 		/** C: create agents */
-		int nrobots = 3;
+		int nrobots = 2;
 		robots = new ArrayList<Agent>();
 		for(int j=0; j<nrobots; j++) robots.add(new Agent(new Point(0,j), Color.pink));
 		
@@ -136,7 +136,12 @@ public class Board {
 
 	public static void displayObjects(){
 		for(Agent agent : robots) GUI.displayObject(agent);
-		for(Box box : boxes) GUI.displayObject(box);
+		for(Box box : boxes) {
+			Point p = box.point;
+			if (getEntity(p) != null)
+				GUI.displayObject(box);
+
+		}
 	}
 	
 	public static void removeObjects(){
