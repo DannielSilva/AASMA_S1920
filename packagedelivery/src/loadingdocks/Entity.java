@@ -5,7 +5,6 @@ import java.awt.Point;
 import java.util.Random;
 
 /**
- * Agent behavior
  * @author Rui Henriques
  */
 public class Entity extends Thread {

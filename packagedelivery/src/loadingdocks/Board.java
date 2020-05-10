@@ -14,8 +14,6 @@ public class Board {
 
 	/** The environment */
 
-	public enum Turtle { agent, box }
-	
 	public static int nX = 10, nY = 10;
 	private static Block[][] board;
 	private static Entity[][] objects;
@@ -52,7 +50,7 @@ public class Board {
 				board[pshelves[k].x+i][pshelves[k].y] = new Block(Shape.shelf, colors[k]);
 		
 		/** C: create agents */
-		int nrobots = 2;
+		int nrobots = 3;
 		robots = new ArrayList<Agent>();
 		for(int j=0; j<nrobots; j++) robots.add(new Agent(new Point(0,j), Color.pink));
 		
@@ -136,12 +134,7 @@ public class Board {
 
 	public static void displayObjects(){
 		for(Agent agent : robots) GUI.displayObject(agent);
-		for(Box box : boxes) {
-			Point p = box.point;
-			if (getEntity(p) != null)
-				GUI.displayObject(box);
-
-		}
+		for(Box box : boxes) GUI.displayObject(box);
 	}
 	
 	public static void removeObjects(){
