@@ -18,7 +18,7 @@ public class Board {
 	public static int nX = 10, nY = 10;
 	private static Block[][] board;
 	private static Entity[][] objects;
-	private static List<Agent> robots;
+	private static List<Station> robots;
 	private static List<Box> boxes;
 
 	/****************************
@@ -53,14 +53,14 @@ public class Board {
 
 		/** C: create agents */
 		int nrobots = 3;
-		robots = new ArrayList<Agent>();
+		robots = new ArrayList<Station>();
 		for (int j = 0; j < nrobots; j++)
-			robots.add(new Agent(new Point(0, j), Color.pink));
+			robots.add(new Station(new Point(0, j), Color.pink));
 
 		objects = new Entity[nX][nY];
 		for (Box box : boxes)
 			objects[box.point.x][box.point.y] = box;
-		for (Agent agent : robots)
+		for (Station agent : robots)
 			objects[agent.point.x][agent.point.y] = agent;
 	}
 
@@ -131,7 +131,7 @@ public class Board {
 
 	public static void step() {
 		removeObjects();
-		for (Agent a : robots)
+		for (Station a : robots)
 			a.agentDecision();
 		displayObjects();
 		GUI.update();
@@ -143,14 +143,14 @@ public class Board {
 	}
 
 	public static void displayObjects() {
-		for (Agent agent : robots)
+		for (Station agent : robots)
 			GUI.displayObject(agent);
 		for (Box box : boxes)
 			GUI.displayObject(box);
 	}
 
 	public static void removeObjects() {
-		for (Agent agent : robots)
+		for (Station agent : robots)
 			GUI.removeObject(agent);
 		for (Box box : boxes)
 			GUI.removeObject(box);

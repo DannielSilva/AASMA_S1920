@@ -49,7 +49,7 @@ public class GUI extends JFrame {
 					g.setColor(Color.white);
 					g.drawRect(15, 15, 20, 20);
 				} else {
-					switch (((Agent) entity).direction) {
+					switch (((Station) entity).direction) {
 						case 0:
 							g.fillPolygon(new int[] { 10, 25, 40 }, new int[] { 40, 10, 40 }, 3);
 							break;
