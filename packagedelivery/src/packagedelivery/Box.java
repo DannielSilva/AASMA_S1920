@@ -1,4 +1,4 @@
-package loadingdocks;
+package packagedelivery;
 
 import java.awt.Color;
 import java.awt.Point;
@@ -8,18 +8,18 @@ public class Box extends Entity {
 	public Box(Point point, Color color) {
 		super(point, color);
 	}
-	
+
 	/*****************************
-	 ***** AUXILIARY METHODS ***** 
+	 ***** AUXILIARY METHODS *****
 	 *****************************/
 
 	public void grabBox(Point newpoint) {
 		Board.removeEntity(point);
 		point = newpoint;
 	}
-	
+
 	public void dropBox(Point newpoint) {
-		Board.insertEntity(this,newpoint);
+		Board.insertEntity(this, newpoint);
 		point = newpoint;
 	}
 

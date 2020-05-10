@@ -1,4 +1,4 @@
-package loadingdocks;
+package packagedelivery;
 
 import java.awt.Color;
 import java.awt.Point;
@@ -13,9 +13,9 @@ public class Entity extends Thread {
 	public Color color;
 	protected Random random;
 
-	public Entity(Point point, Color color){
+	public Entity(Point point, Color color) {
 		this.point = point;
 		this.color = color;
 		this.random = new Random();
-	} 
+	}
 }

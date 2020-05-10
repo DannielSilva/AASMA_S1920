@@ -1,9 +1,10 @@
-package loadingdocks;
+package packagedelivery;
 
 import java.awt.EventQueue;
 
 /**
  * Multi-agent system creation
+ * 
  * @author Rui Henriques
  */
 public class Main {
