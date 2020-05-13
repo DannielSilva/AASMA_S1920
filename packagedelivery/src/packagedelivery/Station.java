@@ -16,11 +16,15 @@ public class Station extends Entity {
 	public int direction = 90;
 	public Box cargo;
 	private Point ahead;
+	private int id;
+	private int points = 0;
+	private int delivered = 0;
 
-	private int energy = 100; //everyone has the same?
-	private List<Vehicle> landVehicles = new ArrayList<Vehicle>();
-	private List<Station> reachableByLand = new ArrayList<Station>(); //ver isto ainda
-	
+	private int energy = 100; // everyone has the same?
+	private List<Vehicle> vehicles = new ArrayList<Vehicle>();
+	private List<Route> reachables = new ArrayList<Route>(); // ver isto ainda
+
+	// FIXME: lista de processamentos de caixa
 	private List<PackBox> packages = new ArrayList<PackBox>();
 
 	public Station(Point point, Color color) {
@@ -30,56 +34,51 @@ public class Station extends Entity {
 	/**********************
 	 **** A: decision *****
 	 **********************/
-/*
-	decisoes 
-	escolher caixa
-	ler destino da caixa
-		somos a estacao?
-		senao
-			se o destino for reachable:
-				manda
-			senao
-				experimenta um qq
-	
-	sensor
-		destino da caixa
-		és meu vizinho? / por onde te mando
-		saber a melhor caixa a entregar
-		veiculos disponiveis
-		escolher caixa
-	
-	atuator
-		escolher destino/intermedio
-		vai
-
-*/
+	/*
+	 * decisoes escolher caixa ler destino da caixa somos a estacao? senao se o
+	 * destino for reachable: manda senao experimenta um qq
+	 * 
+	 * sensor destino da caixa és meu vizinho? / por onde te mando saber a melhor
+	 * caixa a entregar veiculos disponiveis escolher caixa
+	 * 
+	 * atuator escolher destino/intermedio vai
+	 * 
+	 */
+	// se n for reachable experimenta outra caixa q possa ser
 	public void agentDecision() {
-		PackBox pack = chooseBox();
-		Station destiny = readPackageDestiny(pack);
-		//somos a estacao?
-		if (isDestinyReachable(destiny)) {
-			//manda
-		}
-		else {
-			//experimenta um vizinho
+		List<PackBox> orderedPackages = chooseBox();
+
+		boolean done = false;
+		while (done) {
+			Station destiny = readPackageDestiny(pack);
+			// somos a estacao?
+			if (destiny.getStationId() == this.id) {
+				Station source = pack.getSource();
+				source.increaseDelivered();
+				source.increasePoints(pack.getReward());
+			}
+
 		}
 
-		
+		Route route = findRoute(destiny);
+		if (route != null) {
+
+			Vehicle vehicle = findVehicle(route);
+			if (vehicle != null) {
+				send(destiny, vehicle, pack);
+			}
+
+		} else {
+			// experimenta um vizinho
+		}
+
 		/*
-		ahead = aheadPosition();
-		if (isWall())
-			rotateRandomly();
-		else if (isRamp() && isBoxAhead() && !cargo())
-			grabBox();
-		else if (isShelf() && !isBoxAhead() && cargo() && shelfColor().equals(cargoColor()))
-			dropBox();
-		else if (!isFreeCell())
-			rotateRandomly();
-		else if (random.nextInt(5) == 0)
-			rotateRandomly();
-		else
-			moveAhead();
-			*/
+		 * ahead = aheadPosition(); if (isWall()) rotateRandomly(); else if (isRamp() &&
+		 * isBoxAhead() && !cargo()) grabBox(); else if (isShelf() && !isBoxAhead() &&
+		 * cargo() && shelfColor().equals(cargoColor())) dropBox(); else if
+		 * (!isFreeCell()) rotateRandomly(); else if (random.nextInt(5) == 0)
+		 * rotateRandomly(); else moveAhead();
+		 */
 	}
 
 	/********************/
@@ -91,36 +90,94 @@ public class Station extends Entity {
 		return pack.getDestiny();
 	}
 
-	/* FIXME which route is reachable */
-	public boolean isDestinyReachable(Station destiny) {
-		return reachableByLand.contains( destiny);
+	// FIXME meter preferencia de rota
+	public Route findRoute(Station destiny) {
+		for (Route r : reachables) {
+			if (r.containsStation(destiny)) {
+				return r;
+			}
+		}
+		return null;
 	}
 
 	/* FIXME choose best box with utility */
-	public PackBox chooseBox() {
-		return packages.get(0);
+	// retornar varias ordenadas por utilidade
+	public List<PackBox> chooseBox() {
+		ArrayList<PackBox> sorted = (ArrayList<PackBox>) packages;
+		Collections.sort(sorted, (b1, b2) -> {
+			int evalM1 = evaluateBox(b1);
+			int evalM2 = evaluateBox(b2);
+			if (evalM1 == evalM2) {
+				return 0;
+			}
+			return evalM1 > evalM2 ? -1 : 1;
+		});
+		return sorted;
 	}
 
-	/* FIXME */
-	public boolean vehicleAvailable() {
-		return !landVehicles.isEmpty();
+	// FIXME considerar guardar cenas pq iteracoes ++
+	// entre 0 e 100
+	private int evaluateBox(PackBox b1) {
+		if (b1.getDestiny().getStationId() == this.getStationId()) {
+			return 0;
+		}
+		Route r = findRoute(b1.getDestiny());
+		if (r != null) {
+			Vehicle v = findVehicle(r);
+			if (v != null) {
+				return b1.getReward() / v.getCost();
+			} else {
+				return 100;
+			}
+		} else {
+			return 100;
+		}
+
 	}
-	
+
+	// FIXME escolher o que gasta menos ainda
+	public Vehicle findVehicle(Route r) {
+		for (Vehicle v : vehicles) {
+			if (v.canGoThrough(r))
+				return v;
+		}
+		return null;
+	}
 
 	/**********************/
 	/**** C: actuators ****/
 	/**********************/
 
-	public void putPackageInTheVehicle() {
-		//packages.remove(pack)
+	public void send(Station s, Vehicle vehicle, PackBox pack) {
+		vehicles.remove(vehicle);
+		s.receiveVehicle(vehicle);
+		packages.remove(pack);
+		s.receivePackage(pack);
 	}
 
+	public void receiveVehicle(Vehicle v) {
+		vehicles.add(v);
+	}
 
+	public void receivePackage(PackBox b) {
+		packages.add(b);
+	}
 
 	/**********************/
 	/**** D: auxiliary ****/
 	/**********************/
-	/* --------------------------*/
+	public int getStationId() {
+		return id;
+	}
+
+	public void increasePoints(int p) {
+		this.points += p;
+	}
+
+	public void increaseDelivered() {
+		this.delivered += 1;
+	}
+	/* -------------------------- */
 
 	/* Check if agent is carrying box */
 	public boolean cargo() {
@@ -171,6 +228,7 @@ public class Station extends Entity {
 	private boolean isWall() {
 		return ahead.x < 0 || ahead.y < 0 || ahead.x >= Board.nX || ahead.y >= Board.nY;
 	}
+
 	/* Rotate agent to right */
 	public void rotateRandomly() {
 		if (random.nextBoolean())
@@ -208,6 +266,7 @@ public class Station extends Entity {
 		cargo.dropBox(ahead);
 		cargo = null;
 	}
+
 	/* Position ahead */
 	private Point aheadPosition() {
 		Point newpoint = new Point(point.x, point.y);
