@@ -46,10 +46,11 @@ public class Station extends Entity {
 	 */
 	// se n for reachable experimenta outra caixa q possa ser
 	public void agentDecision() {
-		List<PackBox> orderedPackages = chooseBox();
+		SortedSet<PreProcessedPackBox> orderedPackages = chooseBox();
 
-		boolean done = false;
-		while (done) {
+		for (PreProcessedPackBox prep : orderedPackages) {
+			PackBox pack = prep.getPack();
+
 			Station destiny = readPackageDestiny(pack);
 			// somos a estacao?
 			if (destiny.getStationId() == this.id) {
@@ -58,18 +59,19 @@ public class Station extends Entity {
 				source.increasePoints(pack.getReward());
 			}
 
-		}
+			Route route = findRoute(destiny);
+			if (route != null) {
 
-		Route route = findRoute(destiny);
-		if (route != null) {
+				Vehicle vehicle = findVehicle(route);
+				if (vehicle != null) {
+					send(destiny, vehicle, pack);
+					break;
+				}
 
-			Vehicle vehicle = findVehicle(route);
-			if (vehicle != null) {
-				send(destiny, vehicle, pack);
+			} else {
+				// experimenta um vizinho
+				break;
 			}
-
-		} else {
-			// experimenta um vizinho
 		}
 
 		/*
@@ -102,28 +104,27 @@ public class Station extends Entity {
 
 	/* FIXME choose best box with utility */
 	// retornar varias ordenadas por utilidade
-	public List<PackBox> chooseBox() {
-		ArrayList<PackBox> sorted = (ArrayList<PackBox>) packages;
-		Collections.sort(sorted, (b1, b2) -> {
-			int evalM1 = evaluateBox(b1);
-			int evalM2 = evaluateBox(b2);
-			if (evalM1 == evalM2) {
-				return 0;
-			}
-			return evalM1 > evalM2 ? -1 : 1;
-		});
-		return sorted;
+	public SortedSet<PreProcessedPackBox> chooseBox() {
+		SortedSet<PreProcessedPackBox> set = new TreeSet<PreProcessedPackBox>();
+		PreProcessedPackBox prep;
+		for (PackBox p : packages) {
+			prep = new PreProcessedPackBox(p);
+			prep.setRate(evaluateBox(p, prep));
+			set.add(prep);
+		}
+		return set;
 	}
 
-	// FIXME considerar guardar cenas pq iteracoes ++
 	// entre 0 e 100
-	private int evaluateBox(PackBox b1) {
+	private int evaluateBox(PackBox b1, PreProcessedPackBox prep) {
 		if (b1.getDestiny().getStationId() == this.getStationId()) {
 			return 0;
 		}
 		Route r = findRoute(b1.getDestiny());
+		prep.setRoute(r);
 		if (r != null) {
 			Vehicle v = findVehicle(r);
+			prep.setVehicle(v);
 			if (v != null) {
 				return b1.getReward() / v.getCost();
 			} else {
@@ -132,7 +133,6 @@ public class Station extends Entity {
 		} else {
 			return 100;
 		}
-
 	}
 
 	// FIXME escolher o que gasta menos ainda
