@@ -1,7 +1,5 @@
 package packagedelivery;
 
-import java.awt.Color;
-import java.awt.Point;
 import java.util.Random;
 
 /**
@@ -9,8 +7,6 @@ import java.util.Random;
  */
 public class Entity2 extends Thread {
 
-	public Point point;
-	public Color color;
 	protected Random random;
 
 	public Entity2() {

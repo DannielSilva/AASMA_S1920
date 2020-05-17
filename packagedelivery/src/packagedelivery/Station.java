@@ -11,14 +11,13 @@ import java.util.*;
  * 
  * @author Rui Henriques
  */
-public class Station extends Entity {
+public class Station extends Entity2 {
 
 	public int direction = 90;
-	public Box cargo;
-	private Point ahead;
 	private int id;
 	private int points = 0;
 	private int delivered = 0;
+	private StationBehaviour behaviour;
 
 	private int energy = 100; // everyone has the same?
 	private List<Vehicle> vehicles = new ArrayList<Vehicle>();
@@ -27,8 +26,8 @@ public class Station extends Entity {
 	// FIXME: lista de processamentos de caixa
 	private List<PackBox> packages = new ArrayList<PackBox>();
 
-	public Station(Point point, Color color) {
-		super(point, color);
+	public Station() {
+		super();
 	}
 
 	/**********************
@@ -46,49 +45,11 @@ public class Station extends Entity {
 	 */
 	// se n for reachable experimenta outra caixa q possa ser
 	public void agentDecision() {
-		SortedSet<PreProcessedPackBox> orderedPackages = chooseBox();
-
-		for (PreProcessedPackBox prep : orderedPackages) {
-			PackBox pack = prep.getPack();
-
-			Station destiny = readPackageDestiny(pack);
-			// somos a estacao?
-			if (destiny.getStationId() == this.id) {
-				Station source = pack.getSource();
-				source.increaseDelivered();
-				source.increasePoints(pack.getReward());
-			}
-
-			Route route = prep.getRoute();
-			if (route != null) {
-
-				Vehicle vehicle = prep.getVehicle();
-				if (vehicle != null) {
-					send(destiny, vehicle, pack);
-					break;
-				}
-
-			} else {
-				// experimenta um vizinho
-				Route guess = randomRoute();
-				Vehicle vehicle = findVehicle(guess);
-				if (vehicle != null) {
-					send(guess.getOther(this), vehicle, pack);
-				}
-				break;
-			}
-		}
-
-		/*
-		 * ahead = aheadPosition(); if (isWall()) rotateRandomly(); else if (isRamp() &&
-		 * isBoxAhead() && !cargo()) grabBox(); else if (isShelf() && !isBoxAhead() &&
-		 * cargo() && shelfColor().equals(cargoColor())) dropBox(); else if
-		 * (!isFreeCell()) rotateRandomly(); else if (random.nextInt(5) == 0)
-		 * rotateRandomly(); else moveAhead();
-		 */
+		if (behaviour != null)
+			behaviour.agentDecision();
 	}
 
-	private Route randomRoute() {
+	public Route randomRoute() {
 		int index = random.nextInt(reachables.size());
 		return reachables.get(index);
 	}
@@ -163,6 +124,7 @@ public class Station extends Entity {
 		s.receiveVehicle(vehicle);
 		packages.remove(pack);
 		s.receivePackage(pack);
+		decreaseEnergyBy(vehicle.getCost());
 	}
 
 	public void receiveVehicle(Vehicle v) {
@@ -180,119 +142,19 @@ public class Station extends Entity {
 		return id;
 	}
 
-	public void increasePoints(int p) {
+	public void increasePointsBy(int p) {
 		this.points += p;
+	}
+
+	public void decreaseEnergyBy(int e) {
+		this.energy -= e;
 	}
 
 	public void increaseDelivered() {
 		this.delivered += 1;
 	}
-	/* -------------------------- */
 
-	/* Check if agent is carrying box */
-	public boolean cargo() {
-		return cargo != null;
-	}
-
-	/* Return the color of the box */
-	public Color cargoColor() {
-		return cargo.color;
-	}
-
-	/* Return the color of the shelf ahead or 0 otherwise */
-	public Color shelfColor() {
-		Point ahead = aheadPosition();
-		return Board.getBlock(ahead).color;
-	}
-
-	/*
-	 * Check if the cell ahead is floor (which means not a wall, not a shelf nor a
-	 * ramp) and there are any robot there
-	 */
-	public boolean isFreeCell() {
-		if (Board.getBlock(ahead).shape.equals(Shape.free))
-			if (Board.getEntity(ahead) == null)
-				return true;
-		return false;
-	}
-
-	/* Check if the cell ahead contains a box */
-	public boolean isBoxAhead() {
-		Entity entity = Board.getEntity(ahead);
-		return entity != null && entity instanceof Box;
-	}
-
-	/* Check if the cell ahead is a shelf */
-	public boolean isShelf() {
-		Block block = Board.getBlock(ahead);
-		return block.shape.equals(Shape.shelf);
-	}
-
-	/* Check if the cell ahead is a ramp */
-	public boolean isRamp() {
-		Block block = Board.getBlock(ahead);
-		return block.shape.equals(Shape.ramp);
-	}
-
-	/* Check if the cell ahead is a wall */
-	private boolean isWall() {
-		return ahead.x < 0 || ahead.y < 0 || ahead.x >= Board.nX || ahead.y >= Board.nY;
-	}
-
-	/* Rotate agent to right */
-	public void rotateRandomly() {
-		if (random.nextBoolean())
-			rotateLeft();
-		else
-			rotateRight();
-	}
-
-	/* Rotate agent to right */
-	public void rotateRight() {
-		direction = (direction + 90) % 360;
-	}
-
-	/* Rotate agent to left */
-	public void rotateLeft() {
-		direction = (direction - 90) % 360;
-	}
-
-	/* Move agent forward */
-	public void moveAhead() {
-		Board.updateEntityPosition(point, ahead);
-		if (cargo())
-			cargo.moveBox(ahead);
-		point = ahead;
-	}
-
-	/* Cargo box */
-	public void grabBox() {
-		cargo = (Box) Board.getEntity(ahead);
-		cargo.grabBox(point);
-	}
-
-	/* Drop box */
-	public void dropBox() {
-		cargo.dropBox(ahead);
-		cargo = null;
-	}
-
-	/* Position ahead */
-	private Point aheadPosition() {
-		Point newpoint = new Point(point.x, point.y);
-		switch (direction) {
-			case 0:
-				newpoint.y++;
-				break;
-			case 90:
-				newpoint.x++;
-				break;
-			case 180:
-				newpoint.y--;
-				break;
-			default:
-				newpoint.x--;
-		}
-		return newpoint;
+	public void setBehaviour(StationBehaviour behaviour) {
+		this.behaviour = behaviour;
 	}
 }
