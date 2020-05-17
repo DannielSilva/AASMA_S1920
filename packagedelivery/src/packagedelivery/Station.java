@@ -59,10 +59,10 @@ public class Station extends Entity {
 				source.increasePoints(pack.getReward());
 			}
 
-			Route route = findRoute(destiny);
+			Route route = prep.getRoute();
 			if (route != null) {
 
-				Vehicle vehicle = findVehicle(route);
+				Vehicle vehicle = prep.getVehicle();
 				if (vehicle != null) {
 					send(destiny, vehicle, pack);
 					break;
@@ -70,6 +70,11 @@ public class Station extends Entity {
 
 			} else {
 				// experimenta um vizinho
+				Route guess = randomRoute();
+				Vehicle vehicle = findVehicle(guess);
+				if (vehicle != null) {
+					send(guess.getOther(this), vehicle, pack);
+				}
 				break;
 			}
 		}
@@ -81,6 +86,11 @@ public class Station extends Entity {
 		 * (!isFreeCell()) rotateRandomly(); else if (random.nextInt(5) == 0)
 		 * rotateRandomly(); else moveAhead();
 		 */
+	}
+
+	private Route randomRoute() {
+		int index = random.nextInt(reachables.size());
+		return reachables.get(index);
 	}
 
 	/********************/

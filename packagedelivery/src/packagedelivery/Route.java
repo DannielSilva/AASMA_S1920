@@ -30,4 +30,8 @@ public class Route {
     public boolean containsStation(Station s) {
         return s.getId() == one.getId() || s.getId() == two.getId();
     }
+
+    public Station getOther(Station s) {
+        return s.getStationId() == one.getStationId() ? two : one;
+    }
 }
