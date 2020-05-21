@@ -34,4 +34,14 @@ public class Route {
     public Station getOther(Station s) {
         return s.getStationId() == one.getStationId() ? two : one;
     }
+
+    public void sendVehicleFrom(Vehicle vehicle, Station from) {
+        Station s = getOther(from);
+        s.receiveVehicle(vehicle, this);
+    }
+
+    public void sendPackageFrom(PackBox pack, Station from) {
+        Station s = getOther(from);
+        s.receivePackage(pack, this);
+    }
 }

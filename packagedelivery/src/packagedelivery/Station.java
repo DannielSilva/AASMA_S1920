@@ -17,11 +17,12 @@ public class Station extends Entity2 {
 	private int id;
 	private int points = 0;
 	private int delivered = 0;
-	private StationBehaviour behaviour;
+	private StationMode mode;
 
 	private int energy = 100; // everyone has the same?
 	private List<Vehicle> vehicles = new ArrayList<Vehicle>();
 	private List<Route> reachables = new ArrayList<Route>(); // ver isto ainda
+	private Map<Station, Route> memory = new TreeMap<Station, Route>();
 
 	// FIXME: lista de processamentos de caixa
 	private List<PackBox> packages = new ArrayList<PackBox>();
@@ -45,8 +46,35 @@ public class Station extends Entity2 {
 	 */
 	// se n for reachable experimenta outra caixa q possa ser
 	public void agentDecision() {
-		if (behaviour != null)
-			behaviour.agentDecision();
+		if (mode != null) {
+			SortedSet<PreProcessedPackBox> orderedPackages = chooseBox();
+
+			for (PreProcessedPackBox prep : orderedPackages) {
+				PackBox pack = prep.getPack();
+				Station destiny = readPackageDestiny(pack);
+				// somos a estacao?
+				if (destiny.getStationId() == getStationId())
+					deliverHere(pack);
+
+				Route route = prep.getRoute();
+				if (route != null) {
+					Vehicle vehicle = prep.getVehicle();
+					if (vehicle != null) {
+						sendThrough(route, vehicle, pack);
+						break;
+					}
+
+				} else {
+					// experimenta um vizinho
+					Route guess = mode.findNewRoute();
+					Vehicle vehicle = findVehicle(guess);
+					if (vehicle != null) {
+						sendThrough(guess, vehicle, pack);
+						break;
+					}
+				}
+			}
+		}
 	}
 
 	public Route randomRoute() {
@@ -61,16 +89,6 @@ public class Station extends Entity2 {
 	/* read package destiny */
 	public Station readPackageDestiny(PackBox pack) {
 		return pack.getDestiny();
-	}
-
-	// FIXME meter preferencia de rota
-	public Route findRoute(Station destiny) {
-		for (Route r : reachables) {
-			if (r.containsStation(destiny)) {
-				return r;
-			}
-		}
-		return null;
 	}
 
 	/* FIXME choose best box with utility */
@@ -91,7 +109,7 @@ public class Station extends Entity2 {
 		if (b1.getDestiny().getStationId() == this.getStationId()) {
 			return 0;
 		}
-		Route r = findRoute(b1.getDestiny());
+		Route r = findReachableRoute(b1.getDestiny());
 		prep.setRoute(r);
 		if (r != null) {
 			Vehicle v = findVehicle(r);
@@ -115,24 +133,36 @@ public class Station extends Entity2 {
 		return null;
 	}
 
+	// FIXME meter preferencia de rota
+	public Route findReachableRoute(Station destiny) {
+		for (Route r : reachables) {
+			if (r.containsStation(destiny)) {
+				return r;
+			}
+		}
+		return null;
+	}
+
 	/**********************/
 	/**** C: actuators ****/
 	/**********************/
 
-	public void send(Station s, Vehicle vehicle, PackBox pack) {
+	public void sendThrough(Route r, Vehicle vehicle, PackBox pack) {
 		vehicles.remove(vehicle);
-		s.receiveVehicle(vehicle);
+		r.sendVehicleFrom(vehicle, this);
 		packages.remove(pack);
-		s.receivePackage(pack);
+		r.sendPackageFrom(pack, this);
 		decreaseEnergyBy(vehicle.getCost());
 	}
 
-	public void receiveVehicle(Vehicle v) {
+	public void receiveVehicle(Vehicle v, Route r) {
 		vehicles.add(v);
+		mode.receiveVehicle(v, r);
 	}
 
-	public void receivePackage(PackBox b) {
+	public void receivePackage(PackBox b, Route r) {
 		packages.add(b);
+		mode.receivePackage(b, r);
 	}
 
 	/**********************/
@@ -154,7 +184,26 @@ public class Station extends Entity2 {
 		this.delivered += 1;
 	}
 
-	public void setBehaviour(StationBehaviour behaviour) {
-		this.behaviour = behaviour;
+	public void setBehaviour(StationMode behaviour) {
+		this.mode = behaviour;
+	}
+
+	private void deliverHere(PackBox pack) {
+		// FIXME reward and remove from list
+		Station source = pack.getSource();
+		source.increaseDelivered();
+		source.increasePointsBy(pack.getReward());
 	}
 }
+
+/*
+ * PLANEAMENTO
+ * 
+ * ESTAÇOES NAO COMUNICAM: - Não guardar nada (temos); - Ver continentes; -
+ * Associar de onde veio à origem; - Quando recebes, associar onde veio a toda a
+ * gente por quem passou;
+ * 
+ * ESTAÇOES COMUNICAM: - Quando entrega, propaga que entregou; - Perguntar
+ * recursivamente como chegar;
+ * 
+ */
