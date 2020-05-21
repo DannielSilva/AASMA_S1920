@@ -18,6 +18,7 @@ public class Station extends Entity2 {
 	private int points = 0;
 	private int delivered = 0;
 	private StationMode mode;
+	private int continentId;
 
 	private int energy = 100; // everyone has the same?
 	private List<Vehicle> vehicles = new ArrayList<Vehicle>();
@@ -27,8 +28,9 @@ public class Station extends Entity2 {
 	// FIXME: lista de processamentos de caixa
 	private List<PackBox> packages = new ArrayList<PackBox>();
 
-	public Station() {
+	public Station(int identifier) {
 		super();
+		id = identifier;
 	}
 
 	/**********************
@@ -191,6 +193,10 @@ public class Station extends Entity2 {
 		this.mode = behaviour;
 	}
 
+	public void setContinentId(int id) {
+		this.continentId = id;
+	}
+
 	private void deliverHere(PackBox pack) {
 		// FIXME reward and remove from list
 		Station source = pack.getSource();
@@ -200,7 +206,14 @@ public class Station extends Entity2 {
 
 	public void addStationRoute(Station source, Route r) {
 
+
 	}
+
+	public void initStationRoutes(Route r) {
+		reachables.add(r);
+	}
+
+
 }
 
 /*

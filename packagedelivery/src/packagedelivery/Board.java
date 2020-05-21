@@ -5,6 +5,7 @@ import java.awt.Point;
 import java.util.ArrayList;
 import java.util.List;
 import packagedelivery.Block.Shape;
+import packagedelivery.Route.RouteType;
 
 /**
  * Environment
@@ -15,79 +16,96 @@ public class Board {
 
 	/** The environment */
 
-	public static int nX = 10, nY = 10;
-	private static Block[][] board;
-	private static Entity[][] objects;
-	private static List<Station> robots;
-	private static List<Box> boxes;
+	private static Graph map;
+	private static List<Station> stations;
+	private static List<PackBox> boxes;
 
 	/****************************
 	 ***** A: SETTING BOARD *****
 	 ****************************/
 
 	public static void initialize() {
+		
+		//To set
+		int agents = 10;
 
-		/** A: create board */
-		board = new Block[nX][nY];
-		for (int i = 0; i < nX; i++)
-			for (int j = 0; j < nY; j++)
-				board[i][j] = new Block(Shape.free, Color.lightGray);
 
-		/** B: create ramp, boxes and shelves */
-		int rampX = 4, rampY = 3;
-		Color[] colors = new Color[] { Color.red, Color.blue, Color.green, Color.yellow };
-		boxes = new ArrayList<Box>();
-		for (int i = rampX, k = 0; i < 2 * rampX; i++) {
-			for (int j = 0; j < rampY; j++) {
-				board[i][j] = new Block(Shape.ramp, Color.gray);
-				if ((j == 0 || j == 1) && (i == (rampX + 1) || i == (rampX + 2)))
-					continue;
-				else
-					boxes.add(new Box(new Point(i, j), colors[k++ % 4]));
-			}
+		map = new Graph(agents);
+		map.buildGraph();
+
+		//Whole Map / Continent disposal
+		//Auxiliary for intercontinent communication and for self location
+		ArrayList<ArrayList<Integer>> continents = map.getContinents();
+		
+		//Sea Map
+		ArrayList<ArrayList<Integer>> sea = map.getSeaMap();
+
+		//Air Map
+		ArrayList<ArrayList<Integer>> air = map.getSkyGraph();
+
+		//Land Map
+		ArrayList<ArrayList<Integer>> land = map.getLandGraph();
+
+		for( int i = 0; i < agents; i++){
+			station = new Station(i);
+			stations.add(station);
 		}
-		Point[] pshelves = new Point[] { new Point(0, 6), new Point(0, 8), new Point(8, 6), new Point(8, 8) };
-		for (int k = 0; k < pshelves.length; k++)
-			for (int i = 0; i < 2; i++)
-				board[pshelves[k].x + i][pshelves[k].y] = new Block(Shape.shelf, colors[k]);
 
-		/** C: create agents */
-		int nrobots = 3;
-		robots = new ArrayList<Station>();
-		for (int j = 0; j < nrobots; j++)
-			robots.add(new Station(new Point(0, j), Color.pink));
+		for( int i = 0; i < agents; i++){
 
-		objects = new Entity[nX][nY];
-		for (Box box : boxes)
-			objects[box.point.x][box.point.y] = box;
-		for (Station agent : robots)
-			objects[agent.point.x][agent.point.y] = agent;
+			//Sea Routes
+			if(sea.get(i).size() != 0){
+				Station from = stations.get(i);
+				for (int j = 0; j < sea.get(i).size(); j++) { 
+					Station to = stations.get(j);
+					Route r = new Route(from, to, RouteType.SEA);
+					from.initStationRoutes(r);
+					to.initStationRoutes(r);
+				} 
+			}
+
+			//Air Routes
+			if(air.get(i).size() != 0){
+				Station from = stations.get(i);
+				for (int j = 0; j < air.get(i).size(); j++) { 
+					Station to = stations.get(j);
+					Route r = new Route(from, to, RouteType.AIR);
+					from.initStationRoutes(r);
+					to.initStationRoutes(r);
+				} 
+			}
+
+			//Land/IntraContinental Routes
+			if(land.get(i).size() != 0){
+				Station from = stations.get(i);
+				for (int j = 0; j < air.get(i).size(); j++) { 
+					Station to = stations.get(j);
+					Route r = new Route(from, to, RouteType.LAND);
+					from.initStationRoutes(r);
+					to.initStationRoutes(r);
+				} 
+			}
+
+
+			//Continent id assignement
+			Station s = stations.get(i);
+			for(int i = 0; i < continents.size(); i++){
+				if(continents.get(i).contains(s.getStationId()){
+					s.setContinentId(i);
+					break;
+				}
+			}
+
+		}
+
+
+
 	}
 
 	/****************************
 	 ***** B: BOARD METHODS *****
 	 ****************************/
 
-	public static Entity getEntity(Point point) {
-		return objects[point.x][point.y];
-	}
-
-	public static Block getBlock(Point point) {
-		return board[point.x][point.y];
-	}
-
-	public static void updateEntityPosition(Point point, Point newpoint) {
-		objects[newpoint.x][newpoint.y] = objects[point.x][point.y];
-		objects[point.x][point.y] = null;
-	}
-
-	public static void removeEntity(Point point) {
-		objects[point.x][point.y] = null;
-	}
-
-	public static void insertEntity(Entity entity, Point point) {
-		objects[point.x][point.y] = entity;
-	}
 
 	/***********************************
 	 ***** C: ELICIT AGENT ACTIONS *****
@@ -121,42 +139,42 @@ public class Board {
 		Board.runThread.start();
 	}
 
-	public static void reset() {
-		removeObjects();
-		initialize();
-		GUI.displayBoard();
-		displayObjects();
-		GUI.update();
-	}
+	// public static void reset() {
+	// 	removeObjects();
+	// 	initialize();
+	// 	GUI.displayBoard();
+	// 	displayObjects();
+	// 	GUI.update();
+	// }
 
-	public static void step() {
-		removeObjects();
-		for (Station a : robots)
-			a.agentDecision();
-		displayObjects();
-		GUI.update();
-	}
+	// public static void step() {
+	// 	removeObjects();
+	// 	for (Station a : robots)
+	// 		a.agentDecision();
+	// 	displayObjects();
+	// 	GUI.update();
+	// }
 
-	public static void stop() {
-		runThread.interrupt();
-		runThread.stop();
-	}
+	// public static void stop() {
+	// 	runThread.interrupt();
+	// 	runThread.stop();
+	// }
 
-	public static void displayObjects() {
-		for (Station agent : robots)
-			GUI.displayObject(agent);
-		for (Box box : boxes)
-			GUI.displayObject(box);
-	}
+	// public static void displayObjects() {
+	// 	for (Station agent : robots)
+	// 		GUI.displayObject(agent);
+	// 	for (Box box : boxes)
+	// 		GUI.displayObject(box);
+	// }
 
-	public static void removeObjects() {
-		for (Station agent : robots)
-			GUI.removeObject(agent);
-		for (Box box : boxes)
-			GUI.removeObject(box);
-	}
+	// public static void removeObjects() {
+	// 	for (Station agent : robots)
+	// 		GUI.removeObject(agent);
+	// 	for (Box box : boxes)
+	// 		GUI.removeObject(box);
+	// }
 
-	public static void associateGUI(GUI graphicalInterface) {
-		GUI = graphicalInterface;
-	}
+	// public static void associateGUI(GUI graphicalInterface) {
+	// 	GUI = graphicalInterface;
+	// }
 }

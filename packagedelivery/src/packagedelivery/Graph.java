@@ -1,3 +1,5 @@
+package packagedelivery;
+
 import java.util.*;
 import java.util.Random;
 
@@ -5,6 +7,24 @@ public class Graph {
 	
 	// A utility function to add an edge in an 
 	// undirected graph 
+    private int nIslands = 2;
+	private	int nStations; 
+    private int nAirports = 3;
+    private int nSeaports = 3;
+    private ArrayList<ArrayList<Integer> > landAux;
+    private ArrayList<ArrayList<Integer> > land;
+    private ArrayList<ArrayList<Integer> > sea;  
+    private ArrayList<ArrayList<Integer> > sky;   
+
+    public Graph(int stations) {
+		nStations = stations;
+        landAux = new ArrayList<ArrayList<Integer> >(nIslands); 
+        land    = new ArrayList<ArrayList<Integer> >(nStations); 
+        sea     = new ArrayList<ArrayList<Integer> >(nStations); 
+        sky     = new ArrayList<ArrayList<Integer> >(nStations); 
+
+	}
+    
 	public static void addEdge(ArrayList<ArrayList<Integer> > adj, 
 						int u, int v) 
 	{ 
@@ -28,16 +48,12 @@ public class Graph {
 	} 
 
 	// Driver Code 
-	public static void main(String[] args) 
+	public void buildGraph() 
 	{   
         Random rand = new Random();
         Combination comb = new Combination();
 
 		// Creating a graph with 10 stations and 2 continents to divide them into
-        int nIslands = 2;
-		int nStations = 10; 
-        int nAirports = 3;
-        int nSeaports = 3;
 
         int air_per_island = nAirports / nIslands;
         int extra_air = nAirports % nIslands;
@@ -45,7 +61,6 @@ public class Graph {
         int extra_sea = nSeaports % nIslands;
 
         // Groups the stations into continents
-        ArrayList<ArrayList<Integer> > landAux = new ArrayList<ArrayList<Integer> >(nIslands); 
 
         for (int i = 0; i < nIslands; i++)
 			landAux.add(new ArrayList<Integer>()); 
@@ -55,10 +70,6 @@ public class Graph {
 
         // Denotes which stations have airports (At least one from each continent) 
         ArrayList<Integer> skyAux = new ArrayList<Integer>(nAirports);
-
-		ArrayList<ArrayList<Integer> > land = new ArrayList<ArrayList<Integer> >(nStations); 
-        ArrayList<ArrayList<Integer> > sea  = new ArrayList<ArrayList<Integer> >(nStations); 
-        ArrayList<ArrayList<Integer> > sky  = new ArrayList<ArrayList<Integer> >(nStations); 
     
 		
 		for (int i = 0; i < nStations; i++){
@@ -93,11 +104,6 @@ public class Graph {
                 }
             }
         }
-
-    
-
-
-
 
         System.out.print("Continents as follows");
         System.out.println();
@@ -150,41 +156,27 @@ public class Graph {
         System.out.println("Land graph :");
         printGraph(land);
 
-
-        // LandGraph
-        // for(int i = 0; i < nIslands; i++){
-        //     for(int j = 0; j < landAux.get(i).size(); j++){
-
-        //     }
-        // }
-
-
-
-
-
-
-
-        // for (int i = 0; i < nIslands; i++){
-		// 	for( int j : landAux.get(i)){
-        //         for( int k : landAux.get(i)){
-        //             if (j < k){
-        //                 // double p = (double)1/landAux.get(i).size();
-        //                 // double p = (double)1/2;
-        //                 if  (rand.nextDouble() <= p)
-        //                     addEdge(land, j, k);
-        //             }
-        //         }
-        //     } 
-        // }
-
-
-		// // Adding edges one by one 
-		// addEdge(land, 0, 1); 
-		
-        
-        // printGraph(landAux);
-		// printGraph(land);
-        // printGraph(sea);
-        // printGraph(sky); 
 	} 
+
+	/****************************
+	 ***** B: MAP METHODS *****
+	 ****************************/
+
+
+    public static ArrayList<ArrayList<Integer>> getContinents() {
+		return landAux;
+	}
+
+	public static ArrayList<ArrayList<Integer> > getSeaMap() {
+		return sea;
+	}
+
+	public static ArrayList<ArrayList<Integer>> getLandGraph() {
+		return land;
+	}
+
+	public static ArrayList<ArrayList<Integer>> getSkyGraph() {
+		return sky;
+	}
+
 } 
