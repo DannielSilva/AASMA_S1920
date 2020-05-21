@@ -197,6 +197,10 @@ public class Station extends Entity2 {
 		source.increaseDelivered();
 		source.increasePointsBy(pack.getReward());
 	}
+
+	public void addStationRoute(Station source, Route r) {
+
+	}
 }
 
 /*
