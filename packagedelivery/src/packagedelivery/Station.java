@@ -66,7 +66,7 @@ public class Station extends Entity2 {
 
 				} else {
 					// experimenta um vizinho
-					Route guess = mode.findNewRoute();
+					Route guess = mode.findNewRoute(destiny);
 					Vehicle vehicle = findVehicle(guess);
 					if (vehicle != null) {
 						sendThrough(guess, vehicle, pack);
@@ -143,6 +143,10 @@ public class Station extends Entity2 {
 		return null;
 	}
 
+	public Route findMemoryRoute(Station destiny) {
+		return memory.get(destiny);
+	}
+
 	/**********************/
 	/**** C: actuators ****/
 	/**********************/
@@ -157,7 +161,6 @@ public class Station extends Entity2 {
 
 	public void receiveVehicle(Vehicle v, Route r) {
 		vehicles.add(v);
-		mode.receiveVehicle(v, r);
 	}
 
 	public void receivePackage(PackBox b, Route r) {
