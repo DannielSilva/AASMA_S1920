@@ -205,14 +205,12 @@ public class Station extends Entity2 {
 	}
 
 	public void addStationRoute(Station source, Route r) {
-
-
+		memory.put(source, r);
 	}
 
 	public void initStationRoutes(Route r) {
 		reachables.add(r);
 	}
-
 
 }
 

@@ -13,6 +13,7 @@ public class StationSingleReceiveMemoryHeuristic extends StationMode {
 
 	@Override
 	public void receivePackage(PackBox b, Route r) {
-		// nada
+		Station source = b.getSource();
+		station.addStationRoute(source, r);
 	}
 }

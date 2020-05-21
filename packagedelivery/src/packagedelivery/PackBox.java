@@ -8,6 +8,8 @@ public class PackBox extends Entity2 {
 	private final Station destiny;
 	private final Station source;
 	private final int reward;
+	// sitios onde passou
+	// custo que ja gastaram cmg
 
 	public PackBox(Station destiny, Station source, int reward) {
 		this.destiny = destiny;
