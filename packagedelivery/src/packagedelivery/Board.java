@@ -47,7 +47,7 @@ public class Board {
 		ArrayList<ArrayList<Integer>> land = map.getLandGraph();
 
 		for( int i = 0; i < agents; i++){
-			station = new Station(i);
+			Station station = new Station(i);
 			stations.add(station);
 		}
 

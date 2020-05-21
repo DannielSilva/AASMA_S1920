@@ -25,7 +25,7 @@ public class Graph {
 
 	}
     
-	public static void addEdge(ArrayList<ArrayList<Integer> > adj, 
+	public void addEdge(ArrayList<ArrayList<Integer> > adj, 
 						int u, int v) 
 	{ 
 		adj.get(u).add(v); 
@@ -34,7 +34,7 @@ public class Graph {
 
 	// A utility function to print the adjacency list 
 	// representation of graph 
-	public static void printGraph(ArrayList<ArrayList<Integer> > adj) 
+	public void printGraph(ArrayList<ArrayList<Integer> > adj) 
 	{ 
 		for (int i = 0; i < adj.size(); i++) { 
             if(adj.get(i).size() == 0) continue;
@@ -163,19 +163,19 @@ public class Graph {
 	 ****************************/
 
 
-    public static ArrayList<ArrayList<Integer>> getContinents() {
+    public ArrayList<ArrayList<Integer>> getContinents() {
 		return landAux;
 	}
 
-	public static ArrayList<ArrayList<Integer> > getSeaMap() {
+	public ArrayList<ArrayList<Integer> > getSeaMap() {
 		return sea;
 	}
 
-	public static ArrayList<ArrayList<Integer>> getLandGraph() {
+	public ArrayList<ArrayList<Integer>> getLandGraph() {
 		return land;
 	}
 
-	public static ArrayList<ArrayList<Integer>> getSkyGraph() {
+	public ArrayList<ArrayList<Integer>> getSkyGraph() {
 		return sky;
 	}
 
