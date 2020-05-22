@@ -8,9 +8,7 @@ public class StationSingleReceiveMemoryHeuristic extends StationMode {
 		// ver a memoria
 		// se falhar mandar para alguem do continente do destino
 		// se falhar ve random
-		Route r = station.getRouteFromMemory(destiny);
-
-		return r;
+		return station.getRouteFromMemory(destiny);
 	}
 
 	@Override

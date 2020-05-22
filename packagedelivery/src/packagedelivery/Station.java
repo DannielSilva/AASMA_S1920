@@ -161,8 +161,8 @@ public class Station extends Entity2 {
 				double mean = calcMean(costs);
 				if (mean > max)
 					max = mean;
-				total += mean;
-				aux.put(r, mean);
+				total += 1 / mean;
+				aux.put(r, 1 / mean);
 			} else {
 				nullRoutes.add(r);
 			}
@@ -170,8 +170,8 @@ public class Station extends Entity2 {
 
 		for (Route r : nullRoutes) {
 			double points = mode.satisfiesHeuristic(r, destiny) ? max * (memory_factor * 1 / 2) : max * memory_factor;
-			total += points;
-			aux.put(r, points);
+			total += 1 / points;
+			aux.put(r, 1 / points);
 		}
 
 		double p = Math.random() * total;
@@ -208,6 +208,7 @@ public class Station extends Entity2 {
 		r.sendPackageFrom(pack, this);
 		decreaseEnergyBy(vehicle.getCost());
 		mode.sendPackage(pack, vehicle);
+		display(this, r.getOther(this), vehicle, pack);
 	}
 
 	public void receiveVehicle(Vehicle v, Route r) {
@@ -272,6 +273,14 @@ public class Station extends Entity2 {
 
 	public void initStationRoutes(Route r) {
 		reachables.add(r);
+	}
+
+	public void display(Station from, Station to, Vehicle vehicle, PackBox pack) {
+		System.out.println("---------------------------------");
+		System.out.println("From: " + from.getStationId() + " To: " + to.getStationId());
+		System.out.println("Package: " + pack);
+		System.out.println("Vehicle: " + vehicle);
+		System.out.println("---------------------------------");
 	}
 
 }

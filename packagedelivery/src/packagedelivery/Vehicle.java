@@ -24,4 +24,9 @@ public class Vehicle extends Entity2 {
         return rType;
     }
 
+    @Override
+    public String toString() {
+        return "[cost=" + cost + ", rType=" + rType + "]";
+    }
+
 }

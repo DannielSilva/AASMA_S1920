@@ -1,16 +1,13 @@
 package packagedelivery;
 
-import java.util.List;
-
 public class StationSingleReceiveMemory extends StationMode {
 	// so ve os intermedios a partir da origem
 
 	@Override
 	public Route findNewRoute(Station destiny) {
 		// ver a memoria
-		Route r = station.getRouteFromMemory(destiny);
 		// se falhar ve random
-		return r;
+		return station.getRouteFromMemory(destiny);
 	}
 
 	@Override
@@ -21,7 +18,6 @@ public class StationSingleReceiveMemory extends StationMode {
 
 	@Override
 	public void sendPackage(PackBox pack, Vehicle vehicle) {
-		// TODO Auto-generated method stub
 		pack.addTransportationCost(vehicle.getCost());
 
 	}
