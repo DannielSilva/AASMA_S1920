@@ -6,14 +6,27 @@ public class StationSingleReceiveMemoryHeuristic extends StationMode {
 	@Override
 	public Route findNewRoute(Station destiny) {
 		// ver a memoria
-		// mandar para alguem do continente do destino
+		// se falhar mandar para alguem do continente do destino
 		// se falhar ve random
-		return station.randomRoute();
+		Route r = station.getRouteFromMemory(destiny);
+
+		return r;
 	}
 
 	@Override
 	public void receivePackage(PackBox b, Route r) {
 		Station source = b.getSource();
-		station.addStationRoute(source, r);
+		station.addStationRoute(source, r, b.getCost());
 	}
+
+	@Override
+	public void sendPackage(PackBox pack, Vehicle vehicle) {
+		pack.addTransportationCost(vehicle.getCost());
+	}
+
+	@Override
+	public boolean satisfiesHeuristic(Route r, Station destiny) {
+		return station.sameContinent(r, destiny);
+	}
+
 }

@@ -10,6 +10,7 @@ public class PackBox extends Entity2 {
 	private final int reward;
 	// sitios onde passou
 	// custo que ja gastaram cmg
+	private int costs = 0;
 
 	public PackBox(Station destiny, Station source, int reward) {
 		this.destiny = destiny;
@@ -42,4 +43,13 @@ public class PackBox extends Entity2 {
 	public int getReward() {
 		return reward;
 	}
+
+	public void addTransportationCost(int cost) {
+		this.costs += cost;
+	}
+
+	public int getCost() {
+		return this.costs;
+	}
+
 }

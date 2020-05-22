@@ -23,7 +23,8 @@ public class Station extends Entity2 {
 	private int energy = 100; // everyone has the same?
 	private List<Vehicle> vehicles = new ArrayList<Vehicle>();
 	private List<Route> reachables = new ArrayList<Route>(); // ver isto ainda
-	private Map<Station, Route> memory = new TreeMap<Station, Route>();
+	private Map<Station, Map<Route, List<Integer>>> memory = new TreeMap<Station, Map<Route, List<Integer>>>();
+	private double memory_factor = 2;
 
 	// FIXME: lista de processamentos de caixa
 	private List<PackBox> packages = new ArrayList<PackBox>();
@@ -145,8 +146,55 @@ public class Station extends Entity2 {
 		return null;
 	}
 
-	public Route findMemoryRoute(Station destiny) {
-		return memory.get(destiny);
+	public Route getRouteFromMemory(Station destiny) {
+		Map<Route, List<Integer>> routesInfo = memory.get(destiny);
+		if (routesInfo == null) {
+			routesInfo = new TreeMap<Route, List<Integer>>();
+		}
+		Map<Route, Double> aux = new TreeMap<Route, Double>();
+		double total = 0;
+		double max = 0;
+		List<Route> nullRoutes = new ArrayList<Route>();
+		for (Route r : reachables) {
+			List<Integer> costs = routesInfo.get(r);
+			if (costs != null) {
+				double mean = calcMean(costs);
+				if (mean > max)
+					max = mean;
+				total += mean;
+				aux.put(r, mean);
+			} else {
+				nullRoutes.add(r);
+			}
+		}
+
+		for (Route r : nullRoutes) {
+			double points = mode.satisfiesHeuristic(r, destiny) ? max * (memory_factor * 1 / 2) : max * memory_factor;
+			total += points;
+			aux.put(r, points);
+		}
+
+		double p = Math.random() * total;
+		double cumulativeProbability = 0;
+		for (Route r : aux.keySet()) {
+			cumulativeProbability += aux.get(r);
+			if (p <= cumulativeProbability) {
+				return r;
+			}
+		}
+		return randomRoute();
+	}
+
+	private double calcMean(List<Integer> costs) {
+		int total = 0;
+		for (Integer c : costs)
+			total += c;
+		return total / costs.size();
+	}
+
+	public boolean sameContinent(Route r, Station destiny) {
+		Station neigh = r.getOther(this);
+		return neigh.getContinentId() == destiny.getContinentId();
 	}
 
 	/**********************/
@@ -159,6 +207,7 @@ public class Station extends Entity2 {
 		packages.remove(pack);
 		r.sendPackageFrom(pack, this);
 		decreaseEnergyBy(vehicle.getCost());
+		mode.sendPackage(pack, vehicle);
 	}
 
 	public void receiveVehicle(Vehicle v, Route r) {
@@ -175,6 +224,10 @@ public class Station extends Entity2 {
 	/**********************/
 	public int getStationId() {
 		return id;
+	}
+
+	public int getContinentId() {
+		return continentId;
 	}
 
 	public void increasePointsBy(int p) {
@@ -204,8 +257,17 @@ public class Station extends Entity2 {
 		source.increasePointsBy(pack.getReward());
 	}
 
-	public void addStationRoute(Station source, Route r) {
-		memory.put(source, r);
+	public void addStationRoute(Station source, Route r, int cost) {
+		Map<Route, List<Integer>> routesInfo = memory.get(source);
+		if (routesInfo == null) {
+			routesInfo = new TreeMap<Route, List<Integer>>();
+			memory.put(source, routesInfo);
+		}
+		List<Integer> routeCosts = routesInfo.get(r);
+		if (routeCosts == null)
+			routesInfo.put(r, new ArrayList<Integer>());
+		routesInfo.get(r).add(cost);
+
 	}
 
 	public void initStationRoutes(Route r) {

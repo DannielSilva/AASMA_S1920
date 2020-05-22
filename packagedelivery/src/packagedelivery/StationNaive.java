@@ -11,4 +11,9 @@ public class StationNaive extends StationMode {
 	public void receivePackage(PackBox b, Route r) {
 		// nada
 	}
+
+	@Override
+	public void sendPackage(PackBox pack, Vehicle vehicle) {
+		// nada
+	}
 }
