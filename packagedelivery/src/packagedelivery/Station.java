@@ -9,13 +9,12 @@ import java.util.*;
 /**
  * Agent behavior
  * 
- * @author Rui Henriques
  */
 public class Station extends Entity2 {
 
 	public int direction = 90;
 	private int id;
-	private int points = 0;
+	private double points = 0;
 	private int delivered = 0;
 	private StationMode mode;
 	private int continentId;
@@ -127,7 +126,7 @@ public class Station extends Entity2 {
 		}
 	}
 
-	// FIXME escolher o que gasta menos ainda
+	// FIXME escolher o que gasta menos ainda: acho q n
 	public Vehicle findVehicle(Route r) {
 		for (Vehicle v : vehicles) {
 			if (v.canGoThrough(r))
@@ -136,7 +135,7 @@ public class Station extends Entity2 {
 		return null;
 	}
 
-	// FIXME meter preferencia de rota
+	// FIXME meter preferencia de rota: acho q n
 	public Route findReachableRoute(Station destiny) {
 		for (Route r : reachables) {
 			if (r.containsStation(destiny)) {
@@ -231,7 +230,7 @@ public class Station extends Entity2 {
 		return continentId;
 	}
 
-	public void increasePointsBy(int p) {
+	public void increasePointsBy(double p) {
 		this.points += p;
 	}
 
@@ -255,7 +254,10 @@ public class Station extends Entity2 {
 		// FIXME reward and remove from list
 		Station source = pack.getSource();
 		source.increaseDelivered();
-		source.increasePointsBy(pack.getReward());
+		double reward = pack.getReward() / pack.getPath().size();
+		for (Station s : pack.getPath()) {
+			s.increasePointsBy(reward);
+		}
 	}
 
 	public void addStationRoute(Station source, Route r, int cost) {
