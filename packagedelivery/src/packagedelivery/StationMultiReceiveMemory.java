@@ -5,6 +5,11 @@ import java.util.List;
 public class StationMultiReceiveMemory extends StationMode {
 	// ve os intermedios a partir de onde a package andou kakaka
 
+	public StationMultiReceiveMemory(Station s) {
+		super(s);
+		// TODO Auto-generated constructor stub
+	}
+
 	@Override
 	public Route findNewRoute(Station destiny) {
 		// ver a memoria

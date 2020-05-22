@@ -1,12 +1,10 @@
 package packagedelivery;
 
-import java.awt.Color;
-import java.awt.Point;
+
 import java.util.ArrayList;
 import java.util.List;
-import packagedelivery.Block.Shape;
 import packagedelivery.Route.RouteType;
-
+import java.util.Random;
 /**
  * Environment
  * 
@@ -17,8 +15,8 @@ public class Board {
 	/** The environment */
 
 	private static Graph map;
-	private static List<Station> stations;
-	private static List<PackBox> boxes;
+	private static List<Station> stations = new ArrayList<Station>();
+	//private static List<PackBox> boxes;
 
 	/****************************
 	 ***** A: SETTING BOARD *****
@@ -27,7 +25,9 @@ public class Board {
 	public static void initialize() {
 
 		// To set
-		int agents = 10;
+		int agents = 4;
+
+		int transportCost = 1;
 
 		map = new Graph(agents);
 		map.buildGraph();
@@ -47,7 +47,11 @@ public class Board {
 
 		for (int i = 0; i < agents; i++) {
 			Station station = new Station(i);
+			StationMode mode = new StationNaive(station);
+			station.setBehaviour(mode);
 			stations.add(station);
+
+
 		}
 
 		for (int i = 0; i < agents; i++) {
@@ -56,44 +60,116 @@ public class Board {
 			// FIXME routes bidirecionais?
 			if (sea.get(i).size() != 0) {
 				Station from = stations.get(i);
+
 				for (int j = 0; j < sea.get(i).size(); j++) {
-					Station to = stations.get(j);
+
+					Station to = stations.get(sea.get(i).get(j));
 					Route r = new Route(from, to, RouteType.SEA);
 					from.initStationRoutes(r);
-					to.initStationRoutes(r);
+					
+
+					//Probably not necessary to add both edges right away, check for duplicates
+					//to.initStationRoutes(r);
+
+					//Assigning 2*cost to sea and 1 boat for each edge
+					Vehicle boat = new Vehicle( transportCost * 2 , RouteType.SEA);
+					from.receiveVehicle(boat, r);
 				}
+
 			}
 
 			// Air Routes
 			if (air.get(i).size() != 0) {
 				Station from = stations.get(i);
 				for (int j = 0; j < air.get(i).size(); j++) {
-					Station to = stations.get(j);
+
+					Station to = stations.get(air.get(i).get(j));
 					Route r = new Route(from, to, RouteType.AIR);
 					from.initStationRoutes(r);
-					to.initStationRoutes(r);
+					
+					//Probably not necessary to add both edges right away, check for duplicates
+					//to.initStationRoutes(r);
+
+					//Assigning 3*cost to sea and 1 airplane for each edge
+					Vehicle airplane = new Vehicle( transportCost * 3 , RouteType.AIR);
+					from.receiveVehicle(airplane, r);
 				}
 			}
 
 			// Land/IntraContinental Routes
 			if (land.get(i).size() != 0) {
 				Station from = stations.get(i);
-				for (int j = 0; j < air.get(i).size(); j++) {
-					Station to = stations.get(j);
+				for (int j = 0; j < land.get(i).size(); j++) {
+
+					Station to = stations.get(land.get(i).get(j));
 					Route r = new Route(from, to, RouteType.LAND);
 					from.initStationRoutes(r);
-					to.initStationRoutes(r);
+					
+					//Probably not necessary to add both edges right away, check for duplicates
+					//to.initStationRoutes(r);
+
+					//Assigning cost to land and 1 car for each edge
+					Vehicle triciclo = new Vehicle( transportCost, RouteType.LAND);
+					from.receiveVehicle(triciclo, r);
 				}
 			}
 
 			// Continent id assignement
 			Station s = stations.get(i);
 			for (int j = 0; j < continents.size(); j++) {
+
 				if (continents.get(j).contains(s.getStationId())) {
 					s.setContinentId(j);
 					break;
+
 				}
 			}
+
+			// Init some packages
+			int packagesToDeliver = 20;
+			Random rand = new Random();
+
+			while(packagesToDeliver > 0){
+				int endStation = rand.nextInt(stations.size());
+				while(endStation == s.getStationId()){
+					endStation = rand.nextInt(stations.size());
+				}
+
+				Station end = stations.get(endStation);
+
+				int reward = 2;
+
+				//Lowest reward
+				if(s.sameSContinent(end)){
+					reward *= 1;
+				}
+				else{
+					//Medium minus reward
+					if(s.findReachableRoute(end)!=null){
+						reward *= 2;
+					}
+					else{
+						//Medium plus reward
+						if(s.checkIfImContinentBridge()){
+							reward *= 3;
+						}
+						//Highest reward
+						else{
+							reward *= 5;
+						}
+					}
+				}
+
+				PackBox pack = new PackBox(end, s, reward);
+				s.addPackage(pack);
+				packagesToDeliver--;
+			}
+
+
+
+
+
+
 
 		}
 
@@ -135,42 +211,61 @@ public class Board {
 		Board.runThread.start();
 	}
 
-	// public static void reset() {
-	// removeObjects();
-	// initialize();
-	// GUI.displayBoard();
-	// displayObjects();
-	// GUI.update();
-	// }
+	public static void reset() {
+	    stations = new ArrayList<Station>();
+		initialize();
 
-	// public static void step() {
-	// removeObjects();
-	// for (Station a : robots)
-	// a.agentDecision();
-	// displayObjects();
-	// GUI.update();
-	// }
+	}
 
-	// public static void stop() {
-	// runThread.interrupt();
-	// runThread.stop();
-	// }
+	public static void step() {
+		for (Station s : stations){
+			s.agentDecision();
 
-	// public static void displayObjects() {
-	// for (Station agent : robots)
-	// GUI.displayObject(agent);
-	// for (Box box : boxes)
-	// GUI.displayObject(box);
-	// }
 
-	// public static void removeObjects() {
-	// for (Station agent : robots)
-	// GUI.removeObject(agent);
-	// for (Box box : boxes)
-	// GUI.removeObject(box);
-	// }
+			//Adds 1 new package
+			Random rand = new Random();
+			int endStation = rand.nextInt(stations.size());
+			while(endStation == s.getStationId()){
+				endStation = rand.nextInt(stations.size());
+			}
 
-	// public static void associateGUI(GUI graphicalInterface) {
-	// GUI = graphicalInterface;
-	// }
+			Station end = stations.get(endStation);
+
+			int reward = 2;
+
+			//Lowest reward
+			if(s.sameSContinent(end)){
+				reward *= 1;
+			}
+			else{
+				//Medium minus reward
+				if(s.findReachableRoute(end)!=null){
+					reward *= 2;
+				}
+				else{
+					//Medium plus reward
+					if(s.checkIfImContinentBridge()){
+						reward *= 3;
+					}
+					//Highest reward
+					else{
+						reward *= 5;
+					}
+				}
+			}
+
+			PackBox pack = new PackBox(end, s, reward);
+			s.addPackage(pack);
+		}
+	}
+	
+	public static void stop() {
+		runThread.interrupt();
+		runThread.stop();
+	}
+
+
+	public static void associateGUI(GUI graphicalInterface) {
+		GUI = graphicalInterface;
+	}
 }

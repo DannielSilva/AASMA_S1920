@@ -7,10 +7,10 @@ public class Graph {
 	
 	// A utility function to add an edge in an 
 	// undirected graph 
-    private int nIslands = 2;
+    private int nIslands = 1;
 	private	int nStations; 
-    private int nAirports = 3;
-    private int nSeaports = 3;
+    private int nAirports = 2;
+    private int nSeaports = 2;
     private ArrayList<ArrayList<Integer> > landAux;
     private ArrayList<ArrayList<Integer> > land;
     private ArrayList<ArrayList<Integer> > sea;  

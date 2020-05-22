@@ -3,6 +3,11 @@ package packagedelivery;
 public class StationSingleReceiveMemory extends StationMode {
 	// so ve os intermedios a partir da origem
 
+	public StationSingleReceiveMemory(Station s) {
+		super(s);
+		// TODO Auto-generated constructor stub
+	}
+
 	@Override
 	public Route findNewRoute(Station destiny) {
 		// ver a memoria

@@ -1,5 +1,5 @@
 package packagedelivery;
-// Java program to print all combination of size r in an array of size n 
+// Java program to print all combination of size r in an array of si
 import java.io.*; 
 import java.util.*;
   
@@ -11,6 +11,9 @@ public class Combination {
     index  ---> Current index in data[] 
     r ---> Size of a combination to be printed */
 
+    public Combination(){
+
+    }
     private ArrayList<ArrayList<Integer>> allCombs = new ArrayList<ArrayList<Integer>>(2);
     private int combsFound = 0;
 

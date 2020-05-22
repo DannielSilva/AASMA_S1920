@@ -2,6 +2,10 @@ package packagedelivery;
 
 public abstract class StationMode {
 	protected Station station;
+	
+	public StationMode(Station s){
+		station = s;
+	}
 
 	public abstract Route findNewRoute(Station destiny);
 

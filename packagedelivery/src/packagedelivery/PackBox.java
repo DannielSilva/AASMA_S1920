@@ -64,8 +64,8 @@ public class PackBox extends Entity2 {
 
 	@Override
 	public String toString() {
-		return "[costs=" + costs + ", destiny=" + destiny + ", path=" + path + ", reward=" + reward + ", source="
-				+ source + "]";
+		return "[costs=" + costs + ", destiny=" + destiny.getStationId() + ", path=" + path + ", reward=" + reward + ", source="
+				+ source.getStationId() + "]";
 	}
 
 }

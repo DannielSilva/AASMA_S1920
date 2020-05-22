@@ -12,7 +12,7 @@ public class PreProcessedPackBox implements Comparable<PreProcessedPackBox> {
 
 	@Override
 	public int compareTo(PreProcessedPackBox other) {
-		return -1 * ((Integer) rate).compareTo((Integer) other.getRate());
+		return ((Integer) rate).compareTo((Integer) other.getRate());
 	}
 
 	public int getRate() {
