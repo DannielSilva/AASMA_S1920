@@ -40,7 +40,7 @@ public class Graph {
 	{ 
 		for (int i = 0; i < adj.size(); i++) { 
             if(adj.get(i).size() == 0) continue;
-			System.out.println("Direct neighbours of station " + i); 
+			System.out.println("Neighbours of station " + i); 
 			for (int j = 0; j < adj.get(i).size(); j++) { 
 				System.out.print(" -> "+adj.get(i).get(j)); 
 			} 
@@ -192,7 +192,7 @@ public class Graph {
             sky.add(new ArrayList<Integer>());
 
             //Grouping the stations alternatly 
-            landAux.get(nIslands%i).add(i);
+            landAux.get(i%nIslands).add(i);
         }
 
         // Choosing both airports and seaports

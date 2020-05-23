@@ -34,10 +34,10 @@ public class Board {
 		map = new Graph(agents, conti, airports, seaports);
 
 		//first impl
-		map.buildGraph1();
+		//map.buildGraph1();
 
 		//ringContinents impl
-		//map.buildGraphRingWorld();
+		map.buildGraphRingWorld();
 
 		//ring cities
 		//map.buildGraphRingIslands();
