@@ -25,11 +25,22 @@ public class Board {
 
 		// To set
 		int agents = 4;
+		int conti = 2;
+		int airports = 2;
+		int seaports = 2;
 
 		int transportCost = 1;
 
-		map = new Graph(agents);
-		map.buildGraph();
+		map = new Graph(agents, conti, airports, seaports);
+
+		//first impl
+		map.buildGraph1();
+
+		//ringContinents impl
+		//map.buildGraphRingWorld();
+
+		//ring cities
+		//map.buildGraphRingIslands();
 
 		// Whole Map / Continent disposal
 		// Auxiliary for intercontinent communication and for self location
@@ -164,6 +175,15 @@ public class Board {
 
 	}
 
+<<<<<<< HEAD
+	/****************************
+	 ***** B: BOARD METHODS *****
+	 ****************************/
+
+	
+
+=======
+>>>>>>> 5ed40cecaccfa104a0b6a364b09adddc7e2fe0bd
 	/***********************************
 	 ***** B: ELICIT AGENT ACTIONS *****
 	 ***********************************/
