@@ -44,4 +44,9 @@ public class Route {
         Station s = getOther(from);
         s.receivePackage(pack, this);
     }
+
+    @Override
+    public String toString() {
+        return "Route [connects " + one + "and " + two + ", type=" + type + "]";
+    }
 }

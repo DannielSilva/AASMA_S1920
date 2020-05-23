@@ -1,10 +1,10 @@
 package packagedelivery;
 
-
 import java.util.ArrayList;
 import java.util.List;
 import packagedelivery.Route.RouteType;
 import java.util.Random;
+
 /**
  * Environment
  * 
@@ -13,10 +13,9 @@ import java.util.Random;
 public class Board {
 
 	/** The environment */
-
 	private static Graph map;
 	private static List<Station> stations = new ArrayList<Station>();
-	//private static List<PackBox> boxes;
+	private static int iteration = 0;
 
 	/****************************
 	 ***** A: SETTING BOARD *****
@@ -51,7 +50,6 @@ public class Board {
 			station.setBehaviour(mode);
 			stations.add(station);
 
-
 		}
 
 		for (int i = 0; i < agents; i++) {
@@ -66,13 +64,12 @@ public class Board {
 					Station to = stations.get(sea.get(i).get(j));
 					Route r = new Route(from, to, RouteType.SEA);
 					from.initStationRoutes(r);
-					
 
-					//Probably not necessary to add both edges right away, check for duplicates
-					//to.initStationRoutes(r);
+					// Probably not necessary to add both edges right away, check for duplicates
+					// to.initStationRoutes(r);
 
-					//Assigning 2*cost to sea and 1 boat for each edge
-					Vehicle boat = new Vehicle( transportCost * 2 , RouteType.SEA);
+					// Assigning 2*cost to sea and 1 boat for each edge
+					Vehicle boat = new Vehicle(transportCost * 2, RouteType.SEA);
 					from.receiveVehicle(boat, r);
 				}
 
@@ -86,12 +83,12 @@ public class Board {
 					Station to = stations.get(air.get(i).get(j));
 					Route r = new Route(from, to, RouteType.AIR);
 					from.initStationRoutes(r);
-					
-					//Probably not necessary to add both edges right away, check for duplicates
-					//to.initStationRoutes(r);
 
-					//Assigning 3*cost to sea and 1 airplane for each edge
-					Vehicle airplane = new Vehicle( transportCost * 3 , RouteType.AIR);
+					// Probably not necessary to add both edges right away, check for duplicates
+					// to.initStationRoutes(r);
+
+					// Assigning 3*cost to sea and 1 airplane for each edge
+					Vehicle airplane = new Vehicle(transportCost * 3, RouteType.AIR);
 					from.receiveVehicle(airplane, r);
 				}
 			}
@@ -104,12 +101,12 @@ public class Board {
 					Station to = stations.get(land.get(i).get(j));
 					Route r = new Route(from, to, RouteType.LAND);
 					from.initStationRoutes(r);
-					
-					//Probably not necessary to add both edges right away, check for duplicates
-					//to.initStationRoutes(r);
 
-					//Assigning cost to land and 1 car for each edge
-					Vehicle triciclo = new Vehicle( transportCost, RouteType.LAND);
+					// Probably not necessary to add both edges right away, check for duplicates
+					// to.initStationRoutes(r);
+
+					// Assigning cost to land and 1 car for each edge
+					Vehicle triciclo = new Vehicle(transportCost, RouteType.LAND);
 					from.receiveVehicle(triciclo, r);
 				}
 			}
@@ -129,9 +126,9 @@ public class Board {
 			int packagesToDeliver = 20;
 			Random rand = new Random();
 
-			while(packagesToDeliver > 0){
+			while (packagesToDeliver > 0) {
 				int endStation = rand.nextInt(stations.size());
-				while(endStation == s.getStationId()){
+				while (endStation == s.getStationId()) {
 					endStation = rand.nextInt(stations.size());
 				}
 
@@ -139,22 +136,20 @@ public class Board {
 
 				int reward = 2;
 
-				//Lowest reward
-				if(s.sameSContinent(end)){
+				// Lowest reward
+				if (s.sameSContinent(end)) {
 					reward *= 1;
-				}
-				else{
-					//Medium minus reward
-					if(s.findReachableRoute(end)!=null){
+				} else {
+					// Medium minus reward
+					if (s.findReachableRoute(end) != null) {
 						reward *= 2;
-					}
-					else{
-						//Medium plus reward
-						if(s.checkIfImContinentBridge()){
+					} else {
+						// Medium plus reward
+						if (s.checkIfImContinentBridge()) {
 							reward *= 3;
 						}
-						//Highest reward
-						else{
+						// Highest reward
+						else {
 							reward *= 5;
 						}
 					}
@@ -165,22 +160,12 @@ public class Board {
 				packagesToDeliver--;
 			}
 
-
-
-
-
-
-
 		}
 
 	}
 
-	/****************************
-	 ***** B: BOARD METHODS *****
-	 ****************************/
-
 	/***********************************
-	 ***** C: ELICIT AGENT ACTIONS *****
+	 ***** B: ELICIT AGENT ACTIONS *****
 	 ***********************************/
 
 	private static RunThread runThread;
@@ -191,7 +176,7 @@ public class Board {
 		int time;
 
 		public RunThread(int time) {
-			this.time = time * time;
+			this.time = time;
 		}
 
 		public void run() {
@@ -212,43 +197,39 @@ public class Board {
 	}
 
 	public static void reset() {
-	    stations = new ArrayList<Station>();
+		stations = new ArrayList<Station>();
 		initialize();
-
 	}
 
 	public static void step() {
-		for (Station s : stations){
+		System.out.println();
+		System.out.println("______________ ITERAÇÂO " + iteration++ + " ______________");
+		for (Station s : stations) {
 			s.agentDecision();
 
-
-			//Adds 1 new package
+			// Adds 1 new package
 			Random rand = new Random();
 			int endStation = rand.nextInt(stations.size());
-			while(endStation == s.getStationId()){
+			while (endStation == s.getStationId()) {
 				endStation = rand.nextInt(stations.size());
 			}
 
 			Station end = stations.get(endStation);
-
 			int reward = 2;
 
-			//Lowest reward
-			if(s.sameSContinent(end)){
+			// Lowest reward
+			if (s.sameSContinent(end)) {
 				reward *= 1;
-			}
-			else{
-				//Medium minus reward
-				if(s.findReachableRoute(end)!=null){
+			} else {
+				// Medium minus reward
+				if (s.findReachableRoute(end) != null) {
 					reward *= 2;
-				}
-				else{
-					//Medium plus reward
-					if(s.checkIfImContinentBridge()){
+				} else {
+					// Medium plus reward
+					if (s.checkIfImContinentBridge()) {
 						reward *= 3;
-					}
-					//Highest reward
-					else{
+					} else {
+						// Highest reward
 						reward *= 5;
 					}
 				}
@@ -258,12 +239,11 @@ public class Board {
 			s.addPackage(pack);
 		}
 	}
-	
+
 	public static void stop() {
 		runThread.interrupt();
 		runThread.stop();
 	}
-
 
 	public static void associateGUI(GUI graphicalInterface) {
 		GUI = graphicalInterface;

@@ -1,17 +1,11 @@
 package packagedelivery;
 
-import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
-import java.awt.Graphics;
-import java.awt.GridLayout;
 import java.awt.Insets;
-import java.awt.Point;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.ArrayList;
-import java.util.List;
-import javax.swing.BorderFactory;
+
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
@@ -29,43 +23,22 @@ public class GUI extends JFrame {
 	private static final long serialVersionUID = 1L;
 
 	static JTextField speed;
-	static JPanel boardPanel;
 	static JButton run, reset, step;
-
-
 
 	public GUI() {
 		setTitle("Package Delivery");
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setLayout(null);
-		setSize(555, 625);
+		setSize(300, 80);
 		add(createButtonPanel());
 
 		Board.initialize();
 		Board.associateGUI(this);
-
-		boardPanel = new JPanel();
-		boardPanel.setSize(new Dimension(100, 20));
-		boardPanel.setLocation(new Point(20, 60));
-
-
-		boardPanel.setLayout(new GridLayout(10, 10));
-
-
-		update();
-		add(boardPanel);
-	}
-
-
-	
-	public void update() {
-		boardPanel.invalidate();
 	}
 
 	private Component createButtonPanel() {
 		JPanel panel = new JPanel();
-		panel.setSize(new Dimension(600, 50));
-		panel.setLocation(new Point(0, 0));
+		panel.setSize(new Dimension(300, 80));
 
 		step = new JButton("Step");
 		panel.add(step);
@@ -108,7 +81,7 @@ public class GUI extends JFrame {
 				}
 			}
 		});
-		speed = new JTextField(" time per step in [1,100] ");
+		speed = new JTextField("1000");
 		speed.setMargin(new Insets(5, 5, 5, 5));
 		panel.add(speed);
 

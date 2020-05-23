@@ -1,10 +1,8 @@
 package packagedelivery;
 
-import java.awt.Color;
-import java.awt.Point;
 import java.util.*;
 
-public class PackBox extends Entity2 {
+public class PackBox extends Entity {
 
 	private final Station destiny;
 	private final Station source;
@@ -21,16 +19,6 @@ public class PackBox extends Entity2 {
 	/*****************************
 	 ***** AUXILIARY METHODS *****
 	 *****************************/
-
-	/*
-	 * public void grabBox(Point newpoint) { Board.removeEntity(point); point =
-	 * newpoint; }
-	 * 
-	 * public void dropBox(Point newpoint) { Board.insertEntity(this, newpoint);
-	 * point = newpoint; }
-	 * 
-	 * public void moveBox(Point newpoint) { point = newpoint; }
-	 */
 
 	public Station getDestiny() {
 		return destiny;
@@ -64,8 +52,8 @@ public class PackBox extends Entity2 {
 
 	@Override
 	public String toString() {
-		return "[costs=" + costs + ", destiny=" + destiny.getStationId() + ", path=" + path + ", reward=" + reward + ", source="
-				+ source.getStationId() + "]";
+		return "[costs=" + costs + ", source=" + source.getStationId() + ", destiny=" + destiny.getStationId()
+				+ ", path=" + path + ", reward=" + reward + "]";
 	}
 
 }

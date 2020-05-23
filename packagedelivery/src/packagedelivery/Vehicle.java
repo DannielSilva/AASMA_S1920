@@ -2,7 +2,7 @@ package packagedelivery;
 
 import packagedelivery.Route.RouteType;;
 
-public class Vehicle extends Entity2 {
+public class Vehicle extends Entity {
     private int cost;
     private RouteType rType;
 

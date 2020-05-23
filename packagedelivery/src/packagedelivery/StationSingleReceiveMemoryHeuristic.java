@@ -5,7 +5,6 @@ public class StationSingleReceiveMemoryHeuristic extends StationMode {
 
 	public StationSingleReceiveMemoryHeuristic(Station s) {
 		super(s);
-		// TODO Auto-generated constructor stub
 	}
 
 	@Override

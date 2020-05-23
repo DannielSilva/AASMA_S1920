@@ -47,4 +47,9 @@ public class PreProcessedPackBox implements Comparable<PreProcessedPackBox> {
 		this.pack = pack;
 	}
 
+	@Override
+	public String toString() {
+		return "PreProcessedPackBox [pack=" + pack + ", route=" + route + ", vehicle=" + vehicle + "]";
+	}
+
 }

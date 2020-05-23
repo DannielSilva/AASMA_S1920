@@ -1,15 +1,13 @@
 package packagedelivery;
 
-
 import packagedelivery.Route.RouteType;
 import java.util.*;
-
 
 /**
  * Agent behavior
  * 
  */
-public class Station extends Entity2 {
+public class Station extends Entity {
 
 	public int direction = 90;
 	private int id;
@@ -24,7 +22,6 @@ public class Station extends Entity2 {
 	private Map<Station, Map<Route, List<Integer>>> memory = new TreeMap<Station, Map<Route, List<Integer>>>();
 	private double memory_factor = 2;
 
-	// FIXME: lista de processamentos de caixa
 	private List<PackBox> packages = new ArrayList<PackBox>();
 
 	public Station(int identifier) {
@@ -64,7 +61,7 @@ public class Station extends Entity2 {
 						sendThrough(route, vehicle, pack, false);
 						break;
 					}
-					System.out.println("JD ficou sem brinquedos " + vehicle);
+					System.out.println("JD ficou sem brinquedos " + prep);
 
 				} else {
 					// experimenta um vizinho
@@ -75,7 +72,7 @@ public class Station extends Entity2 {
 						sendThrough(guess, vehicle, pack, true);
 						break;
 					}
-					System.out.println("JD ficou sem brinquedos " + vehicle);
+					System.out.println("JD ficou sem brinquedos random " + prep);
 				}
 			}
 		}
@@ -95,7 +92,6 @@ public class Station extends Entity2 {
 		return pack.getDestiny();
 	}
 
-	/* FIXME choose best box with utility */
 	// retornar varias ordenadas por utilidade
 	public List<PreProcessedPackBox> chooseBox() {
 		List<PreProcessedPackBox> set = new ArrayList<PreProcessedPackBox>();
@@ -139,9 +135,8 @@ public class Station extends Entity2 {
 	}
 
 	public boolean checkIfImContinentBridge() {
-		//TODO iterar pelas routes ou melhorar abstracao
-		for (Vehicle v : vehicles) {
-			if (v.getrType().equals(RouteType.SEA) || v.getrType().equals(RouteType.AIR))
+		for (Route r : reachables) {
+			if (!r.getType().equals(RouteType.LAND))
 				return true;
 		}
 		return false;
@@ -219,9 +214,13 @@ public class Station extends Entity2 {
 	public void sendThrough(Route r, Vehicle vehicle, PackBox pack, boolean b) {
 		vehicles.remove(vehicle);
 		r.sendVehicleFrom(vehicle, this);
+
 		packages.remove(pack);
 		r.sendPackageFrom(pack, this);
+
 		decreaseEnergyBy(vehicle.getCost());
+
+		pack.addToPath(this);
 		mode.sendPackage(pack, vehicle);
 		display(this, r.getOther(this), vehicle, pack, b);
 	}
@@ -272,7 +271,6 @@ public class Station extends Entity2 {
 	}
 
 	private void deliverHere(PackBox pack) {
-		// FIXME reward and remove from list
 		System.out.println("Estou a entregar: " + pack.toString());
 		Station source = pack.getSource();
 		source.increaseDelivered();
@@ -302,11 +300,16 @@ public class Station extends Entity2 {
 
 	public void display(Station from, Station to, Vehicle vehicle, PackBox pack, boolean b) {
 		System.out.println("---------------------------------");
-		System.out.println("From: " + from.getStationId() + " To: " + to.getStationId());
+		System.out.println("From: " + from + " To: " + to);
 		System.out.println("Package: " + pack);
 		System.out.println("Vehicle: " + vehicle);
 		System.out.println("Rota random: " + b);
 		System.out.println("---------------------------------");
+	}
+
+	@Override
+	public String toString() {
+		return id + "";
 	}
 
 }

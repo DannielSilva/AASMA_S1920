@@ -7,7 +7,6 @@ public class StationMultiReceiveMemory extends StationMode {
 
 	public StationMultiReceiveMemory(Station s) {
 		super(s);
-		// TODO Auto-generated constructor stub
 	}
 
 	@Override
@@ -30,9 +29,7 @@ public class StationMultiReceiveMemory extends StationMode {
 
 	@Override
 	public void sendPackage(PackBox pack, Vehicle vehicle) {
-		pack.addToPath(station);
 		pack.addTransportationCost(vehicle.getCost());
-
 	}
 
 }

@@ -4,7 +4,6 @@ public class StationNaive extends StationMode {
 
 	public StationNaive(Station s) {
 		super(s);
-		// TODO Auto-generated constructor stub
 	}
 
 	@Override
@@ -19,6 +18,5 @@ public class StationNaive extends StationMode {
 
 	@Override
 	public void sendPackage(PackBox pack, Vehicle vehicle) {
-		pack.addToPath(station);
 	}
 }
