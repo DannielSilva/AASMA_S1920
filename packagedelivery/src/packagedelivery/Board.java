@@ -8,6 +8,12 @@ import packagedelivery.Route.RouteType;
 import java.util.Random;
 import java.io.*;
 
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.PrintWriter;
+import java.time.format.DateTimeFormatter;
+import java.time.LocalDateTime;
+
 /**
  * Environment
  * 
@@ -19,6 +25,9 @@ public class Board{
 	private static Graph map;
 	private static List<Station> stations = new ArrayList<Station>();
 	private static int iteration = 0;
+
+	private static List<Double> info = new ArrayList<Double>();
+	// isto tem de ir po reset
 
 	/****************************
 	 ***** A: SETTING BOARD
@@ -92,7 +101,7 @@ public class Board{
 
 		for (int i = 0; i < agents; i++) {
 			Station station = new Station(i);
-			StationMode mode = new StationSingleReceiveMemory(station);
+			StationMode mode = new StationComunication(station);
 			station.setBehaviour(mode);
 			stations.add(station);
 
@@ -261,20 +270,29 @@ public class Board{
 
 	public static void reset() throws IOException, ClassNotFoundException {
 		stations = new ArrayList<Station>();
+		iteration = 0;
 		initialize();
 	}
 
 	public static void step() {
-		System.out.println();
-		System.out.println("______________ ITERAÇÂO " + iteration++ + " ______________");
+		// System.out.println();
+		// System.out.println("______________ ITERAÇÂO " + iteration + "
+		// ______________");
+		iteration++;
+		double sum = 0;
+		boolean proceed = false;
 		for (Station s : stations) {
-			s.agentDecision();
-
+			boolean canAct = s.canAct();
+			if (canAct) {
+				s.agentDecision();
+			}
+			proceed = proceed || canAct;
+			sum += s.ratio();
 			// // Adds 1 new package
 			// Random rand = new Random();
 			// int endStation = rand.nextInt(stations.size());
 			// while (endStation == s.getStationId()) {
-			// 	endStation = rand.nextInt(stations.size());
+			// endStation = rand.nextInt(stations.size());
 			// }
 
 			// Station end = stations.get(endStation);
@@ -282,25 +300,32 @@ public class Board{
 
 			// // Lowest reward
 			// if (s.sameSContinent(end)) {
-			// 	reward *= 1;
+			// reward *= 1;
 			// } else {
-			// 	// Medium minus reward
-			// 	if (s.findReachableRoute(end) != null) {
-			// 		reward *= 2;
-			// 	} else {
-			// 		// Medium plus reward
-			// 		if (s.checkIfImContinentBridge()) {
-			// 			reward *= 3;
-			// 		} else {
-			// 			// Highest reward
-			// 			reward *= 5;
-			// 		}
-			// 	}
+			// // Medium minus reward
+			// if (s.findReachableRoute(end) != null) {
+			// reward *= 2;
+			// } else {
+			// // Medium plus reward
+			// if (s.checkIfImContinentBridge()) {
+			// reward *= 3;
+			// } else {
+			// // Highest reward
+			// reward *= 5;
+			// }
+			// }
 			// }
 
 			// PackBox pack = new PackBox(end, s, reward);
 			// s.addPackage(pack);
 		}
+		if (!proceed) {
+			runThread.stop();
+			System.out.println("CONVERGED");
+		}
+		double mean = (sum / stations.size());
+		info.add(mean);
+		System.out.println(iteration + " " + mean);
 	}
 
 	public static void stop() {
@@ -310,5 +335,33 @@ public class Board{
 
 	public static void associateGUI(GUI graphicalInterface) {
 		GUI = graphicalInterface;
+	}
+
+	public static void createCSVfile() {
+		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm");
+		String filename = "reports/info" + LocalDateTime.now().format(formatter) + ".csv";
+		try (PrintWriter writer = new PrintWriter(new File(filename))) {
+
+			StringBuilder sb = new StringBuilder();
+			sb.append("iter");
+			sb.append(',');
+			sb.append("ratio");
+			sb.append('\n');
+
+			int iter = 1;
+			for (Double mean : info) {
+				sb.append(iter++);
+				sb.append(',');
+				sb.append(mean);
+				sb.append('\n');
+			}
+
+			writer.write(sb.toString());
+			writer.close();
+			System.out.println("done!");
+
+		} catch (FileNotFoundException e) {
+			System.out.println(e.getMessage());
+		}
 	}
 }
