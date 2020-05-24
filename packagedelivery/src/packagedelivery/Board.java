@@ -231,8 +231,13 @@ public class Board {
 		// ______________");
 		iteration++;
 		double sum = 0;
+		boolean proceed = false;
 		for (Station s : stations) {
-			s.agentDecision();
+			boolean canAct = s.canAct();
+			if (canAct) {
+				s.agentDecision();
+			}
+			proceed = proceed || canAct;
 			sum += s.ratio();
 			// // Adds 1 new package
 			// Random rand = new Random();
@@ -264,6 +269,10 @@ public class Board {
 
 			// PackBox pack = new PackBox(end, s, reward);
 			// s.addPackage(pack);
+		}
+		if (!proceed) {
+			runThread.stop();
+			System.out.println("CONVERGED");
 		}
 		System.out.println(iteration + " " + (sum / stations.size()));
 	}

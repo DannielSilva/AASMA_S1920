@@ -403,6 +403,9 @@ public class Station extends Entity implements Comparable<Station> {
 		return ((Integer) getStationId()).compareTo((Integer) o.getStationId());
 	}
 
+	public boolean canAct() {
+		return packages.size() > 0 && energy > 0;
+	}
 }
 
 /*
