@@ -7,7 +7,7 @@ import java.util.*;
  * Agent behavior
  * 
  */
-public class Station extends Entity {
+public class Station extends Entity implements Comparable<Station> {
 
 	public int direction = 90;
 	private int id;
@@ -20,6 +20,7 @@ public class Station extends Entity {
 	private List<Vehicle> vehicles = new ArrayList<Vehicle>();
 	private List<Route> reachables = new ArrayList<Route>(); // ver isto ainda
 	private Map<Station, Map<Route, List<Integer>>> memory = new TreeMap<Station, Map<Route, List<Integer>>>();
+	private Map<Station, Pair<Route, Integer>> bestTable = new TreeMap<Station, Pair<Route, Integer>>();
 	private double memory_factor = 2;
 
 	private List<PackBox> packages = new ArrayList<PackBox>();
@@ -51,8 +52,10 @@ public class Station extends Entity {
 				PackBox pack = prep.getPack();
 				Station destiny = readPackageDestiny(pack);
 				// somos a estacao?
-				if (destiny.getStationId() == getStationId())
+				if (destiny.getStationId() == getStationId()) {
 					deliverHere(pack);
+					continue;
+				}
 
 				Route route = prep.getRoute();
 				if (route != null) {
@@ -191,6 +194,54 @@ public class Station extends Entity {
 		return randomRoute();
 	}
 
+	public Route findBestRoute(Station destiny) {
+		return findBestRoute(new Request(destiny)).getRoute();
+	}
+
+	public Request findBestRoute(Request request) {
+		if (request.alreadyVisited(this)) {
+			request.setRoute(null);
+			return request;
+		}
+
+		Route min_r = null;
+		int min_c = Integer.MAX_VALUE;
+		Station destiny = request.getDestiny();
+		Pair<Route, Integer> pair = bestTable.get(destiny);
+
+		if (pair != null) {
+			min_r = pair.getK();
+			min_c = pair.getV();
+		} else {
+			for (Route r : reachables) {
+				if (r.getOther(this).equals(destiny) && r.cost() < min_c) {
+					min_r = r;
+					min_c = r.cost();
+				}
+			}
+		}
+		if (min_r == null) {
+			for (Route r : reachables) {
+				Request new_req = request.buildNewWithPath(this);
+				Request response = r.getOther(this).findBestRoute(new_req);
+
+				if (response.getRoute() == null)
+					continue;
+
+				int cost = r.cost() + response.getCost();
+				if (cost != -1 && cost < min_c) {
+					min_r = r;
+					min_c = cost;
+				}
+			}
+			if (min_r != null)
+				bestTable.put(destiny, new Pair<Route, Integer>(min_r, min_c));
+		}
+		request.setRoute(min_r);
+		request.setCost(min_c);
+		return request;
+	}
+
 	private double calcMean(List<Integer> costs) {
 		int total = 0;
 		for (Integer c : costs)
@@ -227,6 +278,7 @@ public class Station extends Entity {
 
 	public void receiveVehicle(Vehicle v, Route r) {
 		vehicles.add(v);
+		r.setCost(v.getCost());
 	}
 
 	public void receivePackage(PackBox b, Route r) {
@@ -310,6 +362,38 @@ public class Station extends Entity {
 	@Override
 	public String toString() {
 		return id + "";
+	}
+
+	class Pair<T, Z> {
+		private T _t;
+		private Z _z;
+
+		public Pair(T _t, Z _z) {
+			this._t = _t;
+			this._z = _z;
+		}
+
+		public T getK() {
+			return _t;
+		}
+
+		public void set_t(T _t) {
+			this._t = _t;
+		}
+
+		public Z getV() {
+			return _z;
+		}
+
+		public void set_z(Z _z) {
+			this._z = _z;
+		}
+
+	}
+
+	@Override
+	public int compareTo(Station o) {
+		return ((Integer) getStationId()).compareTo((Integer) o.getStationId());
 	}
 
 }

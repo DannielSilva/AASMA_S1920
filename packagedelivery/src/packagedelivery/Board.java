@@ -33,14 +33,14 @@ public class Board {
 
 		map = new Graph(agents, conti, airports, seaports);
 
-		//first impl
-		//map.buildGraph1();
+		// first impl
+		// map.buildGraph1();
 
-		//ringContinents impl
+		// ringContinents impl
 		map.buildGraphRingWorld();
 
-		//ring cities
-		//map.buildGraphRingIslands();
+		// ring cities
+		// map.buildGraphRingIslands();
 
 		// Whole Map / Continent disposal
 		// Auxiliary for intercontinent communication and for self location
@@ -57,7 +57,7 @@ public class Board {
 
 		for (int i = 0; i < agents; i++) {
 			Station station = new Station(i);
-			StationMode mode = new StationNaive(station);
+			StationMode mode = new StationComunication(station);
 			station.setBehaviour(mode);
 			stations.add(station);
 

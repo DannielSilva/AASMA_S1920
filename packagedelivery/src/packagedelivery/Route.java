@@ -8,6 +8,7 @@ public class Route {
     private Station one;
     private Station two;
     private RouteType type;
+    private int cost = 100;
 
     public Route(Station one, Station two, RouteType type) {
         this.one = one;
@@ -48,5 +49,13 @@ public class Route {
     @Override
     public String toString() {
         return "Route [connects " + one + "and " + two + ", type=" + type + "]";
+    }
+
+    public void setCost(int cost) {
+        this.cost = cost;
+    }
+
+    public int cost() {
+        return this.cost;
     }
 }
