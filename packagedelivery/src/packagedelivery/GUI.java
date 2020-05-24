@@ -23,7 +23,7 @@ public class GUI extends JFrame {
 	private static final long serialVersionUID = 1L;
 
 	static JTextField speed;
-	static JButton run, reset, step;
+	static JButton run, reset, step, write;
 
 	public GUI() {
 		setTitle("Package Delivery");
@@ -48,6 +48,13 @@ public class GUI extends JFrame {
 					Board.step();
 				else
 					Board.stop();
+			}
+		});
+		write = new JButton("Write");
+		panel.add(write);
+		write.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				Board.createCSVfile();
 			}
 		});
 		reset = new JButton("Reset");

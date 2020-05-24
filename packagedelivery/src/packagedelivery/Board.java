@@ -5,6 +5,12 @@ import java.util.List;
 import packagedelivery.Route.RouteType;
 import java.util.Random;
 
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.PrintWriter;
+import java.time.format.DateTimeFormatter;
+import java.time.LocalDateTime;
+
 /**
  * Environment
  * 
@@ -17,6 +23,9 @@ public class Board {
 	private static List<Station> stations = new ArrayList<Station>();
 	private static int iteration = 0;
 
+	private static List<Double> info = new ArrayList<Double>();
+	// isto tem de ir po reset
+
 	/****************************
 	 ***** A: SETTING BOARD *****
 	 ****************************/
@@ -24,10 +33,10 @@ public class Board {
 	public static void initialize() {
 
 		// To set
-		int agents = 10;
-		int conti = 2;
-		int airports = 2;
-		int seaports = 2;
+		int agents = 50;
+		int conti = 10;
+		int airports = 20;
+		int seaports = 20;
 
 		int transportCost = 1;
 
@@ -274,7 +283,9 @@ public class Board {
 			runThread.stop();
 			System.out.println("CONVERGED");
 		}
-		System.out.println(iteration + " " + (sum / stations.size()));
+		double mean = (sum / stations.size());
+		info.add(mean);
+		System.out.println(iteration + " " + mean);
 	}
 
 	public static void stop() {
@@ -284,5 +295,33 @@ public class Board {
 
 	public static void associateGUI(GUI graphicalInterface) {
 		GUI = graphicalInterface;
+	}
+
+	public static void createCSVfile() {
+		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm");
+		String filename = "reports/info" + LocalDateTime.now().format(formatter) + ".csv";
+		try (PrintWriter writer = new PrintWriter(new File(filename))) {
+
+			StringBuilder sb = new StringBuilder();
+			sb.append("iter");
+			sb.append(',');
+			sb.append("ratio");
+			sb.append('\n');
+
+			int iter = 1;
+			for (Double mean : info) {
+				sb.append(iter++);
+				sb.append(',');
+				sb.append(mean);
+				sb.append('\n');
+			}
+
+			writer.write(sb.toString());
+			writer.close();
+			System.out.println("done!");
+
+		} catch (FileNotFoundException e) {
+			System.out.println(e.getMessage());
+		}
 	}
 }
