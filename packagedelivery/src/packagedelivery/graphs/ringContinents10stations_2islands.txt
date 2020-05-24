@@ -1,0 +1,45 @@
+Neighbours of station 0
+ -> 0 -> 1 -> 2 -> 3 -> 5 -> 8
+Neighbours of station 1
+ -> 4 -> 6 -> 7 -> 9
+
+-----------------
+Seaports selected
+ -> 8 -> 7
+Sea graph :
+Neighbours of station 7
+ -> 8
+Neighbours of station 8
+ -> 7
+
+-----------------
+Airports selected
+ -> 5 -> 4
+Sky graph :
+Neighbours of station 4
+ -> 5
+Neighbours of station 5
+ -> 4
+
+-----------------
+Land graph :
+Neighbours of station 0
+ -> 1
+Neighbours of station 1
+ -> 0 -> 2
+Neighbours of station 2
+ -> 1 -> 3
+Neighbours of station 3
+ -> 2 -> 5
+Neighbours of station 4
+ -> 6
+Neighbours of station 5
+ -> 3 -> 8
+Neighbours of station 6
+ -> 4 -> 7
+Neighbours of station 7
+ -> 6 -> 9
+Neighbours of station 8
+ -> 5
+Neighbours of station 9
+ -> 7

@@ -1,6 +1,7 @@
 package packagedelivery;
 
 import java.awt.EventQueue;
+import java.io.*;
 
 /**
  * Multi-agent system creation
@@ -9,7 +10,7 @@ import java.awt.EventQueue;
  */
 public class Main {
 
-	public static void main(String[] args) {
+	public static void main(String[] args) throws IOException {
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				try {

@@ -1,0 +1,46 @@
+Continents as follows
+Neighbours of station 0
+ -> 0 -> 4
+Neighbours of station 1
+ -> 1 -> 5
+Neighbours of station 2
+ -> 2 -> 6
+Neighbours of station 3
+ -> 3 -> 7
+
+-----------------
+Seaports selected
+ -> 0 -> 1 -> 6 -> 7
+Sea graph :
+Neighbours of station 0
+ -> 1
+Neighbours of station 1
+ -> 0 -> 6
+Neighbours of station 6
+ -> 1 -> 7
+Neighbours of station 7
+ -> 6
+
+-----------------
+Airports selected
+
+Sky graph :
+
+-----------------
+Land graph :
+Neighbours of station 0
+ -> 4
+Neighbours of station 1
+ -> 5
+Neighbours of station 2
+ -> 6
+Neighbours of station 3
+ -> 7
+Neighbours of station 4
+ -> 0
+Neighbours of station 5
+ -> 1
+Neighbours of station 6
+ -> 2
+Neighbours of station 7
+ -> 3

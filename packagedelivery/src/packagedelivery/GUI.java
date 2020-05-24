@@ -5,6 +5,7 @@ import java.awt.Dimension;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.IOException;
 
 import javax.swing.JButton;
 import javax.swing.JFrame;
@@ -25,7 +26,7 @@ public class GUI extends JFrame {
 	static JTextField speed;
 	static JButton run, reset, step;
 
-	public GUI() {
+	public GUI() throws IOException, ClassNotFoundException {
 		setTitle("Package Delivery");
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setLayout(null);
@@ -53,8 +54,8 @@ public class GUI extends JFrame {
 		reset = new JButton("Reset");
 		panel.add(reset);
 		reset.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent arg0) {
-				Board.reset();
+			public void actionPerformed(ActionEvent arg0){
+				//Board.reset();
 			}
 		});
 		run = new JButton("Run");

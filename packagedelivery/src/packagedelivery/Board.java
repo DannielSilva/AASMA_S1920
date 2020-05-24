@@ -2,15 +2,18 @@ package packagedelivery;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+
 import packagedelivery.Route.RouteType;
 import java.util.Random;
+import java.io.*;
 
 /**
  * Environment
  * 
  * @author Rui Henriques
  */
-public class Board {
+public class Board{
 
 	/** The environment */
 	private static Graph map;
@@ -18,20 +21,22 @@ public class Board {
 	private static int iteration = 0;
 
 	/****************************
-	 ***** A: SETTING BOARD *****
+	 ***** A: SETTING BOARD
+	 * 
+	 * @throws ClassNotFoundException*****
 	 ****************************/
 
-	public static void initialize() {
+	public static void initialize() throws IOException, ClassNotFoundException {
 
 		// To set
-		int agents = 10;
-		int conti = 2;
-		int airports = 2;
-		int seaports = 2;
+		int agents;
+		// int conti = 6;
+		// int airports = 0;
+		// int seaports = 8;
 
 		int transportCost = 1;
 
-		map = new Graph(agents, conti, airports, seaports);
+		// map = new Graph(agents, conti, airports, seaports);
 
 		// first impl
 		// map.buildGraph1();
@@ -41,6 +46,34 @@ public class Board {
 
 		// ring cities
 		// map.buildGraphRingIslands();
+
+		// chain world and cities
+		//map.buildGraphRingss();
+
+
+
+		// Save map
+		// String graph_type = "allRing";
+		// String graph_name = graph_type + agents + "stations_" + conti +"islands";
+		// String fich =  "src/packagedelivery/graphs/" + graph_name + ".dat";
+		// ObjectOutputStream out = new ObjectOutputStream(new BufferedOutputStream(new FileOutputStream(fich)));
+		// out.writeObject(map);
+		// out.close();
+		// System.out.println("''''''''''''");
+		// System.out.println("Saved");
+		// System.out.println("''''''''''''");
+
+
+		// Get map
+		
+		String filename =  "src/packagedelivery/graphs/" + "graphNoob5stations_1islands" + ".dat";
+		ObjectInputStream in = new ObjectInputStream( new BufferedInputStream(new FileInputStream(filename)));
+		map = (Graph)in.readObject();
+		System.out.println("''''''''''''");
+		System.out.println("Recovered");
+		System.out.println("''''''''''''");
+
+
 
 		// Whole Map / Continent disposal
 		// Auxiliary for intercontinent communication and for self location
@@ -55,6 +88,8 @@ public class Board {
 		// Land Map
 		ArrayList<ArrayList<Integer>> land = map.getLandGraph();
 
+		agents = map.getnStations();
+
 		for (int i = 0; i < agents; i++) {
 			Station station = new Station(i);
 			StationMode mode = new StationSingleReceiveMemory(station);
@@ -67,7 +102,7 @@ public class Board {
 
 			// Sea Routes
 			// FIXME routes bidirecionais?
-			if (sea.get(i).size() != 0) {
+			if (map.getnSeaports() != 0 && sea.get(i).size() != 0) {
 				Station from = stations.get(i);
 
 				for (int j = 0; j < sea.get(i).size(); j++) {
@@ -91,7 +126,7 @@ public class Board {
 			}
 
 			// Air Routes
-			if (air.get(i).size() != 0) {
+			if (map.getnAirports() != 0 && air.get(i).size() != 0) {
 				Station from = stations.get(i);
 				for (int j = 0; j < air.get(i).size(); j++) {
 
@@ -146,7 +181,9 @@ public class Board {
 			}
 
 			// Init some packages
-			int packagesToDeliver = 20;
+
+			//Fixme jd pode n gostar
+			int packagesToDeliver = 10;
 			Random rand = new Random();
 
 			while (packagesToDeliver > 0) {
@@ -178,8 +215,11 @@ public class Board {
 					}
 				}
 
+				//Fixme jd pode n gostar
 				PackBox pack = new PackBox(end, s, reward);
+				PackBox pack2 = new PackBox(s, end, reward);
 				s.addPackage(pack);
+				end.addPackage(pack2);
 				packagesToDeliver--;
 			}
 
@@ -219,7 +259,7 @@ public class Board {
 		Board.runThread.start();
 	}
 
-	public static void reset() {
+	public static void reset() throws IOException, ClassNotFoundException {
 		stations = new ArrayList<Station>();
 		initialize();
 	}

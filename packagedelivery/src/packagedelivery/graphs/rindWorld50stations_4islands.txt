@@ -1,0 +1,148 @@
+Continents as follows
+Neighbours of station 0
+ -> 0 -> 4 -> 8 -> 12 -> 16 -> 20 -> 24 -> 28 -> 32 -> 36 -> 40 -> 44 -> 48
+Neighbours of station 1
+ -> 1 -> 5 -> 9 -> 13 -> 17 -> 21 -> 25 -> 29 -> 33 -> 37 -> 41 -> 45 -> 49
+Neighbours of station 2
+ -> 2 -> 6 -> 10 -> 14 -> 18 -> 22 -> 26 -> 30 -> 34 -> 38 -> 42 -> 46
+Neighbours of station 3
+ -> 3 -> 7 -> 11 -> 15 -> 19 -> 23 -> 27 -> 31 -> 35 -> 39 -> 43 -> 47
+
+-----------------
+Seaports selected
+ -> 40 -> 9 -> 42 -> 15
+Sea graph :
+Neighbours of station 9
+ -> 40 -> 42
+Neighbours of station 15
+ -> 42
+Neighbours of station 40
+ -> 9
+Neighbours of station 42
+ -> 9 -> 15
+
+-----------------
+Airports selected
+ -> 32 -> 0 -> 16 -> 17 -> 1 -> 42 -> 18 -> 39 -> 43
+Sky graph :
+Neighbours of station 0
+ -> 32 -> 16
+Neighbours of station 1
+ -> 17 -> 42
+Neighbours of station 16
+ -> 0 -> 17
+Neighbours of station 17
+ -> 16 -> 1
+Neighbours of station 18
+ -> 42 -> 39
+Neighbours of station 32
+ -> 0
+Neighbours of station 39
+ -> 18 -> 43
+Neighbours of station 42
+ -> 1 -> 18
+Neighbours of station 43
+ -> 39
+
+-----------------
+Land graph :
+Neighbours of station 0
+ -> 12 -> 4
+Neighbours of station 1
+ -> 41 -> 17
+Neighbours of station 2
+ -> 34 -> 18 -> 10
+Neighbours of station 3
+ -> 15 -> 47 -> 23 -> 35
+Neighbours of station 4
+ -> 20 -> 0 -> 16
+Neighbours of station 5
+ -> 41 -> 13 -> 9 -> 49
+Neighbours of station 6
+ -> 18 -> 42 -> 22
+Neighbours of station 7
+ -> 23 -> 27 -> 15 -> 19 -> 43
+Neighbours of station 8
+ -> 40 -> 28 -> 32
+Neighbours of station 9
+ -> 45 -> 5
+Neighbours of station 10
+ -> 2 -> 26 -> 18
+Neighbours of station 11
+ -> 23 -> 15
+Neighbours of station 12
+ -> 0 -> 36 -> 20 -> 16
+Neighbours of station 13
+ -> 5 -> 37 -> 21 -> 49
+Neighbours of station 14
+ -> 46 -> 30 -> 34
+Neighbours of station 15
+ -> 3 -> 11 -> 7 -> 47 -> 27 -> 31 -> 43
+Neighbours of station 16
+ -> 12 -> 4 -> 20 -> 40
+Neighbours of station 17
+ -> 1 -> 21 -> 37 -> 45
+Neighbours of station 18
+ -> 2 -> 6 -> 10 -> 42 -> 26
+Neighbours of station 19
+ -> 7 -> 35
+Neighbours of station 20
+ -> 4 -> 12 -> 16 -> 28 -> 44
+Neighbours of station 21
+ -> 13 -> 17 -> 49 -> 29
+Neighbours of station 22
+ -> 6 -> 38 -> 42
+Neighbours of station 23
+ -> 7 -> 11 -> 3 -> 35 -> 47
+Neighbours of station 24
+ -> 32 -> 48
+Neighbours of station 25
+ -> 33 -> 29
+Neighbours of station 26
+ -> 10 -> 18 -> 42 -> 30 -> 34 -> 46
+Neighbours of station 27
+ -> 7 -> 15 -> 39
+Neighbours of station 28
+ -> 8 -> 20 -> 32
+Neighbours of station 29
+ -> 21 -> 25
+Neighbours of station 30
+ -> 14 -> 42 -> 26
+Neighbours of station 31
+ -> 15
+Neighbours of station 32
+ -> 24 -> 28 -> 8 -> 40
+Neighbours of station 33
+ -> 25 -> 49 -> 37 -> 45
+Neighbours of station 34
+ -> 2 -> 26 -> 14
+Neighbours of station 35
+ -> 19 -> 23 -> 3
+Neighbours of station 36
+ -> 12 -> 40 -> 48
+Neighbours of station 37
+ -> 13 -> 33 -> 17 -> 49
+Neighbours of station 38
+ -> 22 -> 46
+Neighbours of station 39
+ -> 27
+Neighbours of station 40
+ -> 8 -> 36 -> 32 -> 16 -> 44
+Neighbours of station 41
+ -> 1 -> 5 -> 45
+Neighbours of station 42
+ -> 6 -> 18 -> 26 -> 30 -> 22 -> 46
+Neighbours of station 43
+ -> 15 -> 7
+Neighbours of station 44
+ -> 40 -> 20
+Neighbours of station 45
+ -> 9 -> 41 -> 33 -> 17
+Neighbours of station 46
+ -> 14 -> 38 -> 42 -> 26
+Neighbours of station 47
+ -> 3 -> 15 -> 23
+Neighbours of station 48
+ -> 24 -> 36
+Neighbours of station 49
+ -> 21 -> 33 -> 37 -> 13 -> 5

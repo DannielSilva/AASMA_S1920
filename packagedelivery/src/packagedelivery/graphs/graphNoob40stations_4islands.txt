@@ -1,0 +1,118 @@
+Continents as follows
+Neighbours of station 0
+ -> 5 -> 11 -> 12 -> 14 -> 16 -> 32 -> 34 -> 36 -> 37
+Neighbours of station 1
+ -> 2 -> 6 -> 8 -> 9 -> 10 -> 19 -> 22 -> 23 -> 25 -> 28 -> 35 -> 39
+Neighbours of station 2
+ -> 0 -> 1 -> 3 -> 4 -> 15 -> 20 -> 21 -> 24 -> 27 -> 33
+Neighbours of station 3
+ -> 7 -> 13 -> 17 -> 18 -> 26 -> 29 -> 30 -> 31 -> 38
+
+-----------------
+Seaports selected
+ -> 36 -> 19 -> 4 -> 26
+Sea graph :
+Neighbours of station 4
+ -> 36 -> 19 -> 26
+Neighbours of station 19
+ -> 36 -> 4 -> 26
+Neighbours of station 26
+ -> 36 -> 19 -> 4
+Neighbours of station 36
+ -> 19 -> 4 -> 26
+
+-----------------
+Airports selected
+ -> 16 -> 10 -> 3 -> 13
+Sky graph :
+Neighbours of station 3
+ -> 16 -> 10 -> 13
+Neighbours of station 10
+ -> 16 -> 3 -> 13
+Neighbours of station 13
+ -> 16 -> 10 -> 3
+Neighbours of station 16
+ -> 10 -> 3 -> 13
+
+-----------------
+Land graph :
+Neighbours of station 0
+ -> 24 -> 21 -> 20 -> 27
+Neighbours of station 1
+ -> 33 -> 21
+Neighbours of station 2
+ -> 39 -> 28 -> 35
+Neighbours of station 3
+ -> 20
+Neighbours of station 4
+ -> 33 -> 27 -> 15 -> 21
+Neighbours of station 5
+ -> 34 -> 37 -> 16
+Neighbours of station 6
+ -> 35 -> 22 -> 8 -> 19 -> 39
+Neighbours of station 7
+ -> 31 -> 30 -> 13 -> 17 -> 18
+Neighbours of station 8
+ -> 6 -> 10 -> 23 -> 35
+Neighbours of station 9
+ -> 35 -> 39 -> 25
+Neighbours of station 10
+ -> 8 -> 23 -> 22
+Neighbours of station 11
+ -> 32 -> 16 -> 14
+Neighbours of station 12
+ -> 16 -> 32
+Neighbours of station 13
+ -> 7 -> 18 -> 17 -> 30
+Neighbours of station 14
+ -> 11 -> 36
+Neighbours of station 15
+ -> 4 -> 21 -> 24
+Neighbours of station 16
+ -> 11 -> 12 -> 5 -> 37
+Neighbours of station 17
+ -> 7 -> 13
+Neighbours of station 18
+ -> 13 -> 7 -> 26
+Neighbours of station 19
+ -> 6 -> 22
+Neighbours of station 20
+ -> 3 -> 0 -> 27
+Neighbours of station 21
+ -> 0 -> 15 -> 1 -> 4 -> 24 -> 33
+Neighbours of station 22
+ -> 6 -> 19 -> 10
+Neighbours of station 23
+ -> 10 -> 8 -> 28
+Neighbours of station 24
+ -> 0 -> 21 -> 15
+Neighbours of station 25
+ -> 9 -> 39
+Neighbours of station 26
+ -> 18 -> 38
+Neighbours of station 27
+ -> 4 -> 20 -> 0
+Neighbours of station 28
+ -> 2 -> 23
+Neighbours of station 29
+ -> 38
+Neighbours of station 30
+ -> 7 -> 13 -> 38
+Neighbours of station 31
+ -> 7 -> 38
+Neighbours of station 32
+ -> 11 -> 12 -> 34
+Neighbours of station 33
+ -> 1 -> 4 -> 21
+Neighbours of station 34
+ -> 5 -> 32 -> 36 -> 37
+Neighbours of station 35
+ -> 6 -> 9 -> 8 -> 2
+Neighbours of station 36
+ -> 14 -> 37 -> 34
+Neighbours of station 37
+ -> 5 -> 36 -> 16 -> 34
+Neighbours of station 38
+ -> 26 -> 29 -> 30 -> 31
+Neighbours of station 39
+ -> 2 -> 9 -> 25 -> 6

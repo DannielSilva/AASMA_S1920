@@ -1,0 +1,82 @@
+Continents as follows
+Neighbours of station 0
+ -> 0 -> 4 -> 8 -> 12 -> 16
+Neighbours of station 1
+ -> 1 -> 5 -> 9 -> 13 -> 17
+Neighbours of station 2
+ -> 2 -> 6 -> 10 -> 14 -> 18
+Neighbours of station 3
+ -> 3 -> 7 -> 11 -> 15 -> 19
+
+-----------------
+Seaports selected
+ -> 12 -> 1 -> 6 -> 19
+Sea graph :
+Neighbours of station 1
+ -> 12 -> 6
+Neighbours of station 6
+ -> 1 -> 19
+Neighbours of station 12
+ -> 1
+Neighbours of station 19
+ -> 6
+
+-----------------
+Airports selected
+ -> 4 -> 0 -> 16 -> 5 -> 2 -> 15
+Sky graph :
+Neighbours of station 0
+ -> 4 -> 16
+Neighbours of station 2
+ -> 5 -> 15
+Neighbours of station 4
+ -> 0
+Neighbours of station 5
+ -> 16 -> 2
+Neighbours of station 15
+ -> 2
+Neighbours of station 16
+ -> 0 -> 5
+
+-----------------
+Land graph :
+Neighbours of station 0
+ -> 4
+Neighbours of station 1
+ -> 5
+Neighbours of station 2
+ -> 6
+Neighbours of station 3
+ -> 7
+Neighbours of station 4
+ -> 0 -> 8
+Neighbours of station 5
+ -> 1 -> 9
+Neighbours of station 6
+ -> 2 -> 10
+Neighbours of station 7
+ -> 3 -> 11
+Neighbours of station 8
+ -> 4 -> 12
+Neighbours of station 9
+ -> 5 -> 13
+Neighbours of station 10
+ -> 6 -> 14
+Neighbours of station 11
+ -> 7 -> 15
+Neighbours of station 12
+ -> 8 -> 16
+Neighbours of station 13
+ -> 9 -> 17
+Neighbours of station 14
+ -> 10 -> 18
+Neighbours of station 15
+ -> 11 -> 19
+Neighbours of station 16
+ -> 12
+Neighbours of station 17
+ -> 13
+Neighbours of station 18
+ -> 14
+Neighbours of station 19
+ -> 15
