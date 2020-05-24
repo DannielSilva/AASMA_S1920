@@ -64,7 +64,7 @@ public class Station extends Entity implements Comparable<Station> {
 					sendThrough(route, vehicle, pack, false);
 					break;
 				}
-				System.out.println("JD ficou sem brinquedos " + prep);
+				// System.out.println("JD ficou sem brinquedos " + prep);
 
 			} else {
 				// experimenta um vizinho
@@ -75,11 +75,13 @@ public class Station extends Entity implements Comparable<Station> {
 					sendThrough(guess, vehicle, pack, true);
 					break;
 				}
-				System.out.println("JD ficou sem brinquedos random " + prep);
+				// System.out.println("JD ficou sem brinquedos random " + prep);
 			}
 		}
 
-		System.out.println("Station " + getStationId() + " made " + points + " points and has " + energy + " resources left " + "ratio : " + (points/(100-energy))); 
+		// System.out.println("Station " + getStationId() + " made " + points + " points
+		// and has " + energy + " resources left " + "ratio : " +
+		// (points/(100-energy)));
 	}
 
 	public Route randomRoute() {
@@ -274,7 +276,7 @@ public class Station extends Entity implements Comparable<Station> {
 
 		pack.addToPath(this);
 		mode.sendPackage(pack, vehicle);
-		display(this, r.getOther(this), vehicle, pack, b);
+		// display(this, r.getOther(this), vehicle, pack, b);
 	}
 
 	public void receiveVehicle(Vehicle v, Route r) {
@@ -324,7 +326,7 @@ public class Station extends Entity implements Comparable<Station> {
 	}
 
 	private void deliverHere(PackBox pack) {
-		System.out.println("Estou a entregar: " + pack.toString());
+		// System.out.println("Estou a entregar: " + pack.toString());
 		Station source = pack.getSource();
 		source.increaseDelivered();
 		double reward = pack.getReward() / pack.getPath().size();
@@ -363,6 +365,10 @@ public class Station extends Entity implements Comparable<Station> {
 	@Override
 	public String toString() {
 		return id + "";
+	}
+
+	public double ratio() {
+		return points / (100 - energy);
 	}
 
 	class Pair<T, Z> {

@@ -34,7 +34,7 @@ public class Board {
 		map = new Graph(agents, conti, airports, seaports);
 
 		// first impl
-		// map.buildGraph1();
+		map.buildGraph1();
 
 		// ringContinents impl
 		// map.buildGraphRingWorld();
@@ -221,12 +221,14 @@ public class Board {
 
 	public static void reset() {
 		stations = new ArrayList<Station>();
+		iteration = 0;
 		initialize();
 	}
 
 	public static void step() {
-		System.out.println();
-		System.out.println("______________ ITERAÇÂO " + iteration++ + " ______________");
+		// System.out.println();
+		// System.out.println("______________ ITERAÇÂO " + iteration++ + "
+		// ______________");
 		for (Station s : stations) {
 			s.agentDecision();
 
@@ -234,7 +236,7 @@ public class Board {
 			// Random rand = new Random();
 			// int endStation = rand.nextInt(stations.size());
 			// while (endStation == s.getStationId()) {
-			// 	endStation = rand.nextInt(stations.size());
+			// endStation = rand.nextInt(stations.size());
 			// }
 
 			// Station end = stations.get(endStation);
@@ -242,20 +244,20 @@ public class Board {
 
 			// // Lowest reward
 			// if (s.sameSContinent(end)) {
-			// 	reward *= 1;
+			// reward *= 1;
 			// } else {
-			// 	// Medium minus reward
-			// 	if (s.findReachableRoute(end) != null) {
-			// 		reward *= 2;
-			// 	} else {
-			// 		// Medium plus reward
-			// 		if (s.checkIfImContinentBridge()) {
-			// 			reward *= 3;
-			// 		} else {
-			// 			// Highest reward
-			// 			reward *= 5;
-			// 		}
-			// 	}
+			// // Medium minus reward
+			// if (s.findReachableRoute(end) != null) {
+			// reward *= 2;
+			// } else {
+			// // Medium plus reward
+			// if (s.checkIfImContinentBridge()) {
+			// reward *= 3;
+			// } else {
+			// // Highest reward
+			// reward *= 5;
+			// }
+			// }
 			// }
 
 			// PackBox pack = new PackBox(end, s, reward);
