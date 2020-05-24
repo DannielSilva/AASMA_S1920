@@ -57,7 +57,7 @@ public class Board {
 
 		for (int i = 0; i < agents; i++) {
 			Station station = new Station(i);
-			StationMode mode = new StationSingleReceiveMemory(station);
+			StationMode mode = new StationComunication(station);
 			station.setBehaviour(mode);
 			stations.add(station);
 
@@ -227,11 +227,13 @@ public class Board {
 
 	public static void step() {
 		// System.out.println();
-		// System.out.println("______________ ITERAÇÂO " + iteration++ + "
+		// System.out.println("______________ ITERAÇÂO " + iteration + "
 		// ______________");
+		iteration++;
+		double sum = 0;
 		for (Station s : stations) {
 			s.agentDecision();
-
+			sum += s.ratio();
 			// // Adds 1 new package
 			// Random rand = new Random();
 			// int endStation = rand.nextInt(stations.size());
@@ -263,6 +265,7 @@ public class Board {
 			// PackBox pack = new PackBox(end, s, reward);
 			// s.addPackage(pack);
 		}
+		System.out.println(iteration + " " + (sum / stations.size()));
 	}
 
 	public static void stop() {
