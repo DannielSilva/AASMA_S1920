@@ -45,40 +45,41 @@ public class Station extends Entity implements Comparable<Station> {
 	 */
 	// se n for reachable experimenta outra caixa q possa ser
 	public void agentDecision() {
-		if (mode != null) {
-			List<PreProcessedPackBox> orderedPackages = chooseBox();
 
-			for (PreProcessedPackBox prep : orderedPackages) {
-				PackBox pack = prep.getPack();
-				Station destiny = readPackageDestiny(pack);
-				// somos a estacao?
-				if (destiny.getStationId() == getStationId()) {
-					deliverHere(pack);
-					continue;
+		List<PreProcessedPackBox> orderedPackages = chooseBox();
+
+		for (PreProcessedPackBox prep : orderedPackages) {
+			PackBox pack = prep.getPack();
+			Station destiny = readPackageDestiny(pack);
+			// somos a estacao?
+			if (destiny.getStationId() == getStationId()) {
+				deliverHere(pack);
+				continue;
+			}
+
+			Route route = prep.getRoute();
+			if (route != null) {
+				Vehicle vehicle = prep.getVehicle();
+				if (vehicle != null) {
+					sendThrough(route, vehicle, pack, false);
+					break;
 				}
+				System.out.println("JD ficou sem brinquedos " + prep);
 
-				Route route = prep.getRoute();
-				if (route != null) {
-					Vehicle vehicle = prep.getVehicle();
-					if (vehicle != null) {
-						sendThrough(route, vehicle, pack, false);
-						break;
-					}
-					System.out.println("JD ficou sem brinquedos " + prep);
+			} else {
+				// experimenta um vizinho
+				Route guess = mode.findNewRoute(destiny);
+				Vehicle vehicle = findVehicle(guess);
+				if (vehicle != null) {
 
-				} else {
-					// experimenta um vizinho
-					Route guess = mode.findNewRoute(destiny);
-					Vehicle vehicle = findVehicle(guess);
-					if (vehicle != null) {
-
-						sendThrough(guess, vehicle, pack, true);
-						break;
-					}
-					System.out.println("JD ficou sem brinquedos random " + prep);
+					sendThrough(guess, vehicle, pack, true);
+					break;
 				}
+				System.out.println("JD ficou sem brinquedos random " + prep);
 			}
 		}
+
+		System.out.println("Station " + getStationId() + " made " + points + " points and has " + energy + " resources left " + "ratio : " + (points/(100-energy))); 
 	}
 
 	public Route randomRoute() {

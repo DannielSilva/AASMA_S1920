@@ -24,7 +24,7 @@ public class Board {
 	public static void initialize() {
 
 		// To set
-		int agents = 4;
+		int agents = 10;
 		int conti = 2;
 		int airports = 2;
 		int seaports = 2;
@@ -37,7 +37,7 @@ public class Board {
 		// map.buildGraph1();
 
 		// ringContinents impl
-		map.buildGraphRingWorld();
+		// map.buildGraphRingWorld();
 
 		// ring cities
 		// map.buildGraphRingIslands();
@@ -57,7 +57,7 @@ public class Board {
 
 		for (int i = 0; i < agents; i++) {
 			Station station = new Station(i);
-			StationMode mode = new StationComunication(station);
+			StationMode mode = new StationSingleReceiveMemory(station);
 			station.setBehaviour(mode);
 			stations.add(station);
 
@@ -82,6 +82,10 @@ public class Board {
 					// Assigning 2*cost to sea and 1 boat for each edge
 					Vehicle boat = new Vehicle(transportCost * 2, RouteType.SEA);
 					from.receiveVehicle(boat, r);
+					Vehicle boat2 = new Vehicle(transportCost * 2, RouteType.SEA);
+					from.receiveVehicle(boat2, r);
+					Vehicle boat3 = new Vehicle(transportCost * 2, RouteType.SEA);
+					from.receiveVehicle(boat3, r);
 				}
 
 			}
@@ -101,6 +105,10 @@ public class Board {
 					// Assigning 3*cost to sea and 1 airplane for each edge
 					Vehicle airplane = new Vehicle(transportCost * 3, RouteType.AIR);
 					from.receiveVehicle(airplane, r);
+					Vehicle airplane2 = new Vehicle(transportCost * 3, RouteType.AIR);
+					from.receiveVehicle(airplane2, r);
+					Vehicle airplane3 = new Vehicle(transportCost * 3, RouteType.AIR);
+					from.receiveVehicle(airplane3, r);
 				}
 			}
 
@@ -119,6 +127,10 @@ public class Board {
 					// Assigning cost to land and 1 car for each edge
 					Vehicle triciclo = new Vehicle(transportCost, RouteType.LAND);
 					from.receiveVehicle(triciclo, r);
+					Vehicle triciclo2 = new Vehicle(transportCost, RouteType.LAND);
+					from.receiveVehicle(triciclo2, r);
+					Vehicle triciclo3 = new Vehicle(transportCost, RouteType.LAND);
+					from.receiveVehicle(triciclo3, r);
 				}
 			}
 
@@ -145,7 +157,7 @@ public class Board {
 
 				Station end = stations.get(endStation);
 
-				int reward = 2;
+				int reward = 1;
 
 				// Lowest reward
 				if (s.sameSContinent(end)) {
@@ -218,36 +230,36 @@ public class Board {
 		for (Station s : stations) {
 			s.agentDecision();
 
-			// Adds 1 new package
-			Random rand = new Random();
-			int endStation = rand.nextInt(stations.size());
-			while (endStation == s.getStationId()) {
-				endStation = rand.nextInt(stations.size());
-			}
+			// // Adds 1 new package
+			// Random rand = new Random();
+			// int endStation = rand.nextInt(stations.size());
+			// while (endStation == s.getStationId()) {
+			// 	endStation = rand.nextInt(stations.size());
+			// }
 
-			Station end = stations.get(endStation);
-			int reward = 2;
+			// Station end = stations.get(endStation);
+			// int reward = 2;
 
-			// Lowest reward
-			if (s.sameSContinent(end)) {
-				reward *= 1;
-			} else {
-				// Medium minus reward
-				if (s.findReachableRoute(end) != null) {
-					reward *= 2;
-				} else {
-					// Medium plus reward
-					if (s.checkIfImContinentBridge()) {
-						reward *= 3;
-					} else {
-						// Highest reward
-						reward *= 5;
-					}
-				}
-			}
+			// // Lowest reward
+			// if (s.sameSContinent(end)) {
+			// 	reward *= 1;
+			// } else {
+			// 	// Medium minus reward
+			// 	if (s.findReachableRoute(end) != null) {
+			// 		reward *= 2;
+			// 	} else {
+			// 		// Medium plus reward
+			// 		if (s.checkIfImContinentBridge()) {
+			// 			reward *= 3;
+			// 		} else {
+			// 			// Highest reward
+			// 			reward *= 5;
+			// 		}
+			// 	}
+			// }
 
-			PackBox pack = new PackBox(end, s, reward);
-			s.addPackage(pack);
+			// PackBox pack = new PackBox(end, s, reward);
+			// s.addPackage(pack);
 		}
 	}
 
