@@ -272,6 +272,7 @@ public class Board {
 
 	public static void reset() {
 		stations = new ArrayList<Station>();
+		info = new ArrayList<Double>();
 		iteration = 0;
 		initialize();
 	}
