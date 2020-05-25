@@ -19,7 +19,7 @@ import java.time.LocalDateTime;
  * 
  * @author Rui Henriques
  */
-public class Board{
+public class Board {
 
 	/** The environment */
 	private static Graph map;
@@ -57,32 +57,28 @@ public class Board{
 		// map.buildGraphRingIslands();
 
 		// chain world and cities
-		//map.buildGraphRingss();
-
-
+		// map.buildGraphRingss();
 
 		// Save map
 		// String graph_type = "allRing";
 		// String graph_name = graph_type + agents + "stations_" + conti +"islands";
-		// String fich =  "src/packagedelivery/graphs/" + graph_name + ".dat";
-		// ObjectOutputStream out = new ObjectOutputStream(new BufferedOutputStream(new FileOutputStream(fich)));
+		// String fich = "src/packagedelivery/graphs/" + graph_name + ".dat";
+		// ObjectOutputStream out = new ObjectOutputStream(new BufferedOutputStream(new
+		// FileOutputStream(fich)));
 		// out.writeObject(map);
 		// out.close();
 		// System.out.println("''''''''''''");
 		// System.out.println("Saved");
 		// System.out.println("''''''''''''");
 
-
 		// Get map
-		
-		String filename =  "src/packagedelivery/graphs/" + "graphNoob5stations_1islands" + ".dat";
-		ObjectInputStream in = new ObjectInputStream( new BufferedInputStream(new FileInputStream(filename)));
-		map = (Graph)in.readObject();
+
+		String filename = "graphs/" + "graphNoob5stations_1islands" + ".dat";
+		ObjectInputStream in = new ObjectInputStream(new BufferedInputStream(new FileInputStream(filename)));
+		map = (Graph) in.readObject();
 		System.out.println("''''''''''''");
 		System.out.println("Recovered");
 		System.out.println("''''''''''''");
-
-
 
 		// Whole Map / Continent disposal
 		// Auxiliary for intercontinent communication and for self location
@@ -191,7 +187,7 @@ public class Board{
 
 			// Init some packages
 
-			//Fixme jd pode n gostar
+			// Fixme jd pode n gostar
 			int packagesToDeliver = 10;
 			Random rand = new Random();
 
@@ -224,7 +220,7 @@ public class Board{
 					}
 				}
 
-				//Fixme jd pode n gostar
+				// Fixme jd pode n gostar
 				PackBox pack = new PackBox(end, s, reward);
 				PackBox pack2 = new PackBox(s, end, reward);
 				s.addPackage(pack);
