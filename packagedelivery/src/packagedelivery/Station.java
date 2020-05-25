@@ -282,7 +282,7 @@ public class Station extends Entity implements Comparable<Station> {
 
 		pack.addToPath(this);
 		mode.sendPackage(pack, vehicle);
-		// display(this, r.getOther(this), vehicle, pack, b);
+		display(this, r.getOther(this), vehicle, pack, b);
 	}
 
 	public void receiveVehicle(Vehicle v, Route r) {
@@ -368,7 +368,7 @@ public class Station extends Entity implements Comparable<Station> {
 		System.out.println("From: " + from + " To: " + to);
 		System.out.println("Package: " + pack);
 		System.out.println("Vehicle: " + vehicle);
-		System.out.println("Rota random: " + b);
+		System.out.println("Not reachable: " + b);
 		System.out.println("---------------------------------");
 	}
 

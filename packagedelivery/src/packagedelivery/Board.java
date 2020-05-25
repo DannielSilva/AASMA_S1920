@@ -73,7 +73,7 @@ public class Board {
 
 		// Get map
 		String type = "Noob";
-		String filename = "graphs/" + "graph" + type + "20stations_4islands" + ".dat";
+		String filename = "graphs/" + "graph" + type + "8stations_2islands" + ".dat";
 		ObjectInputStream in;
 		try {
 			in = new ObjectInputStream(new BufferedInputStream(new FileInputStream(filename)));
@@ -87,7 +87,7 @@ public class Board {
 		System.out.println("''''''''''''");
 		System.out.println("Recovered");
 		System.out.println("''''''''''''");
-
+		map.printWholeGraph();
 		// Whole Map / Continent disposal
 		// Auxiliary for intercontinent communication and for self location
 		ArrayList<ArrayList<Integer>> continents = map.getContinents();
@@ -293,9 +293,8 @@ public class Board {
 	}
 
 	public static void step() {
-		// System.out.println();
-		// System.out.println("______________ ITERAÇÂO " + iteration + "
-		// ______________");
+		System.out.println();
+		System.out.println("______________ ITERAÇÂO " + iteration + "______________");
 		iteration++;
 		double sum = 0;
 		boolean proceed = false;
@@ -346,7 +345,9 @@ public class Board {
 		double mean = (sum / stations.size());
 		info.add(mean);
 		deliverdPerc = (((double) delivered) / ((double) map.getnStations() * 20));
-		System.out.println(iteration + " " + mean + " " + deliverdPerc + "%" + countPackages);
+		// System.out.println(iteration + " " + mean + " " + deliverdPerc + "%" +
+		// countPackages);
+		System.out.println("Amount Delvered: " + deliverdPerc);
 	}
 
 	public static void stop() {
