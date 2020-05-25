@@ -2,7 +2,6 @@ package packagedelivery;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 import packagedelivery.Route.RouteType;
 import java.util.Random;
@@ -32,10 +31,9 @@ public class Board {
 	/****************************
 	 ***** A: SETTING BOARD
 	 * 
-	 * @throws ClassNotFoundException*****
 	 ****************************/
 
-	public static void initialize() throws IOException, ClassNotFoundException {
+	public static void initialize() {
 
 		// To set
 		int agents;
@@ -74,8 +72,16 @@ public class Board {
 		// Get map
 
 		String filename = "graphs/" + "graphNoob5stations_1islands" + ".dat";
-		ObjectInputStream in = new ObjectInputStream(new BufferedInputStream(new FileInputStream(filename)));
-		map = (Graph) in.readObject();
+		ObjectInputStream in;
+		try {
+			in = new ObjectInputStream(new BufferedInputStream(new FileInputStream(filename)));
+			map = (Graph) in.readObject();
+			in.close();
+
+		} catch (Exception e) {
+			e.printStackTrace();
+			return;
+		}
 		System.out.println("''''''''''''");
 		System.out.println("Recovered");
 		System.out.println("''''''''''''");
@@ -97,7 +103,7 @@ public class Board {
 
 		for (int i = 0; i < agents; i++) {
 			Station station = new Station(i);
-			StationMode mode = new StationComunication(station);
+			StationMode mode = new StationNaive(station);
 			station.setBehaviour(mode);
 			stations.add(station);
 
@@ -264,7 +270,7 @@ public class Board {
 		Board.runThread.start();
 	}
 
-	public static void reset() throws IOException, ClassNotFoundException {
+	public static void reset() {
 		stations = new ArrayList<Station>();
 		iteration = 0;
 		initialize();
@@ -316,7 +322,7 @@ public class Board {
 			// s.addPackage(pack);
 		}
 		if (!proceed) {
-			runThread.stop();
+			stop();
 			System.out.println("CONVERGED");
 		}
 		double mean = (sum / stations.size());

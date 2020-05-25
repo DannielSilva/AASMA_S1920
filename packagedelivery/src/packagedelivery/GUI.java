@@ -30,7 +30,7 @@ public class GUI extends JFrame {
 		setTitle("Package Delivery");
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setLayout(null);
-		setSize(300, 80);
+		setSize(350, 80);
 		add(createButtonPanel());
 
 		Board.initialize();
@@ -39,7 +39,7 @@ public class GUI extends JFrame {
 
 	private Component createButtonPanel() {
 		JPanel panel = new JPanel();
-		panel.setSize(new Dimension(300, 80));
+		panel.setSize(new Dimension(350, 80));
 
 		step = new JButton("Step");
 		panel.add(step);
@@ -61,8 +61,8 @@ public class GUI extends JFrame {
 		reset = new JButton("Reset");
 		panel.add(reset);
 		reset.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent arg0){
-				//Board.reset();
+			public void actionPerformed(ActionEvent arg0) {
+				Board.reset();
 			}
 		});
 		run = new JButton("Run");
@@ -89,7 +89,7 @@ public class GUI extends JFrame {
 				}
 			}
 		});
-		speed = new JTextField("1000");
+		speed = new JTextField("100");
 		speed.setMargin(new Insets(5, 5, 5, 5));
 		panel.add(speed);
 
