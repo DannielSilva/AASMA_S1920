@@ -359,7 +359,7 @@ public class Board {
 	}
 
 	public static void createCSVfile() {
-		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm");
+		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH_mm");
 		String filename = "reports/info" + LocalDateTime.now().format(formatter) + ".csv";
 		try (PrintWriter writer = new PrintWriter(new File(filename))) {
 
