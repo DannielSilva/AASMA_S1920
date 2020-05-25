@@ -19,7 +19,11 @@ public class StationMultiReceiveMemory extends StationMode {
 	@Override
 	public void receivePackage(PackBox b, Route r) {
 		List<Station> path = b.getPath();
-
+		if (path == null) {
+			Station source = b.getSource();
+			station.addStationRoute(source, r, b.getCost());
+			return;
+		}
 		for (int i = 0; i < path.size(); i++) {
 			Station s = path.get(i);
 			int cost = (b.getCost() * (i + 1)) / path.size();

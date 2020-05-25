@@ -1,6 +1,6 @@
 package packagedelivery;
 
-public class Route implements Comparable<Route>{
+public class Route implements Comparable<Route> {
     public enum RouteType {
         LAND, SEA, AIR
     }
@@ -61,6 +61,9 @@ public class Route implements Comparable<Route>{
 
     @Override
     public int compareTo(Route arg0) {
-        return one.compareTo(arg0.getStationOne());
+        String s1 = one.getStationId() + "-" + two.getStationId();
+        String s2 = arg0.getStationOne().getStationId() + "-" + arg0.getStationTwo().getStationId();
+
+        return s1.compareTo(s2);
     }
 }

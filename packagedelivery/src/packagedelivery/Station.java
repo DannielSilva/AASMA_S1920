@@ -173,17 +173,23 @@ public class Station extends Entity implements Comparable<Station> {
 				double mean = calcMean(costs);
 				if (mean > max)
 					max = mean;
-				total += 1 / mean;
-				aux.put(r, 1 / mean);
+				total += (1 / mean);
+				aux.put(r, (1 / mean));
 			} else {
 				nullRoutes.add(r);
 			}
 		}
 
 		for (Route r : nullRoutes) {
+			if (max == 0) {
+				max = 1;
+			}
 			double points = mode.satisfiesHeuristic(r, destiny) ? max * (memory_factor * 1 / 2) : max * memory_factor;
-			total += 1 / points;
-			aux.put(r, 1 / points);
+			double inv = 1 / points;
+			total += inv;
+			// System.out.println("max" + max + "points" + points + "total" + total + "inv"
+			// + inv);
+			aux.put(r, inv);
 		}
 
 		double p = Math.random() * total;
@@ -315,6 +321,10 @@ public class Station extends Entity implements Comparable<Station> {
 
 	public void increaseDelivered() {
 		this.delivered += 1;
+	}
+
+	public int getDelivered() {
+		return this.delivered;
 	}
 
 	public void setBehaviour(StationMode behaviour) {

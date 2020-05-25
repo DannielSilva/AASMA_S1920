@@ -26,6 +26,8 @@ public class Board {
 	private static int iteration = 0;
 
 	private static List<Double> info = new ArrayList<Double>();
+	private static int countPackages = 0;
+	private static double deliverdPerc;
 	// isto tem de ir po reset
 
 	/****************************
@@ -70,8 +72,8 @@ public class Board {
 		// System.out.println("''''''''''''");
 
 		// Get map
-
-		String filename = "graphs/" + "graphNoob5stations_1islands" + ".dat";
+		String type = "Noob";
+		String filename = "graphs/" + "graph" + type + "20stations_4islands" + ".dat";
 		ObjectInputStream in;
 		try {
 			in = new ObjectInputStream(new BufferedInputStream(new FileInputStream(filename)));
@@ -103,7 +105,7 @@ public class Board {
 
 		for (int i = 0; i < agents; i++) {
 			Station station = new Station(i);
-			StationMode mode = new StationNaive(station);
+			StationMode mode = new StationComunication(station);
 			station.setBehaviour(mode);
 			stations.add(station);
 
@@ -126,12 +128,11 @@ public class Board {
 					// to.initStationRoutes(r);
 
 					// Assigning 2*cost to sea and 1 boat for each edge
-					Vehicle boat = new Vehicle(transportCost * 2, RouteType.SEA);
-					from.receiveVehicle(boat, r);
-					Vehicle boat2 = new Vehicle(transportCost * 2, RouteType.SEA);
-					from.receiveVehicle(boat2, r);
-					Vehicle boat3 = new Vehicle(transportCost * 2, RouteType.SEA);
-					from.receiveVehicle(boat3, r);
+					for (int k = 0; k < agents / 4; k++) {
+						Vehicle boat = new Vehicle(transportCost * 2, RouteType.SEA);
+						from.receiveVehicle(boat, r);
+					}
+
 				}
 
 			}
@@ -149,12 +150,11 @@ public class Board {
 					// to.initStationRoutes(r);
 
 					// Assigning 3*cost to sea and 1 airplane for each edge
-					Vehicle airplane = new Vehicle(transportCost * 3, RouteType.AIR);
-					from.receiveVehicle(airplane, r);
-					Vehicle airplane2 = new Vehicle(transportCost * 3, RouteType.AIR);
-					from.receiveVehicle(airplane2, r);
-					Vehicle airplane3 = new Vehicle(transportCost * 3, RouteType.AIR);
-					from.receiveVehicle(airplane3, r);
+					for (int k = 0; k < agents / 4; k++) {
+						Vehicle airplane = new Vehicle(transportCost * 3, RouteType.AIR);
+						from.receiveVehicle(airplane, r);
+					}
+
 				}
 			}
 
@@ -171,12 +171,10 @@ public class Board {
 					// to.initStationRoutes(r);
 
 					// Assigning cost to land and 1 car for each edge
-					Vehicle triciclo = new Vehicle(transportCost, RouteType.LAND);
-					from.receiveVehicle(triciclo, r);
-					Vehicle triciclo2 = new Vehicle(transportCost, RouteType.LAND);
-					from.receiveVehicle(triciclo2, r);
-					Vehicle triciclo3 = new Vehicle(transportCost, RouteType.LAND);
-					from.receiveVehicle(triciclo3, r);
+					for (int k = 0; k < agents / 4; k++) {
+						Vehicle triciclo = new Vehicle(transportCost, RouteType.LAND);
+						from.receiveVehicle(triciclo, r);
+					}
 				}
 			}
 
@@ -194,7 +192,7 @@ public class Board {
 			// Init some packages
 
 			// Fixme jd pode n gostar
-			int packagesToDeliver = 10;
+			int packagesToDeliver = 20;
 			Random rand = new Random();
 
 			while (packagesToDeliver > 0) {
@@ -206,31 +204,47 @@ public class Board {
 				Station end = stations.get(endStation);
 
 				int reward = 1;
-
-				// Lowest reward
-				if (s.sameSContinent(end)) {
-					reward *= 1;
-				} else {
-					// Medium minus reward
-					if (s.findReachableRoute(end) != null) {
-						reward *= 2;
+				// assign diferent rewards to packages according to the effort that needs to be
+				// done
+				// Lowest reward - reachables/direct
+				if (s.findReachableRoute(end) != null) {
+					if (s.sameSContinent(end)) {
+						reward *= 1;
 					} else {
-						// Medium plus reward
-						if (s.checkIfImContinentBridge()) {
+						reward *= 3;
+					}
+				} else {
+					// non reachables
+					if (s.sameSContinent(end)) {
+						// easier compound routes
+						if (type.equals("rindWorld") || type.equals("Noob")) {
 							reward *= 3;
+						} else {
+							reward *= 4;
 						}
-						// Highest reward
-						else {
-							reward *= 5;
+					} else {
+						// harder compound routes (chain like) but easy to navigate between continents
+						if (type.equals("Noob") || type.equals("ringContinents")) {
+							if (s.checkIfImContinentBridge()) {
+								reward *= 4;
+							} else {
+
+								reward *= 6;
+							}
+							// harder compound routes (chain like) but few connections between continents
+						} else {
+							reward *= 6 + Math.abs(s.getContinentId() - end.getContinentId());
 						}
+
 					}
 				}
 
 				// Fixme jd pode n gostar
 				PackBox pack = new PackBox(end, s, reward);
-				PackBox pack2 = new PackBox(s, end, reward);
+				// PackBox pack2 = new PackBox(s, end, reward);
 				s.addPackage(pack);
-				end.addPackage(pack2);
+				countPackages += 1;
+				// end.addPackage(pack2);
 				packagesToDeliver--;
 			}
 
@@ -274,6 +288,7 @@ public class Board {
 		stations = new ArrayList<Station>();
 		info = new ArrayList<Double>();
 		iteration = 0;
+		countPackages = 0;
 		initialize();
 	}
 
@@ -284,6 +299,7 @@ public class Board {
 		iteration++;
 		double sum = 0;
 		boolean proceed = false;
+		int delivered = 0;
 		for (Station s : stations) {
 			boolean canAct = s.canAct();
 			if (canAct) {
@@ -291,6 +307,7 @@ public class Board {
 			}
 			proceed = proceed || canAct;
 			sum += s.ratio();
+			delivered += s.getDelivered();
 			// // Adds 1 new package
 			// Random rand = new Random();
 			// int endStation = rand.nextInt(stations.size());
@@ -328,7 +345,8 @@ public class Board {
 		}
 		double mean = (sum / stations.size());
 		info.add(mean);
-		System.out.println(iteration + " " + mean);
+		deliverdPerc = (((double) delivered) / ((double) map.getnStations() * 20));
+		System.out.println(iteration + " " + mean + " " + deliverdPerc + "%" + countPackages);
 	}
 
 	public static void stop() {
@@ -358,6 +376,11 @@ public class Board {
 				sb.append(mean);
 				sb.append('\n');
 			}
+
+			sb.append("delivered");
+			sb.append(',');
+			sb.append(deliverdPerc);
+			sb.append('\n');
 
 			writer.write(sb.toString());
 			writer.close();
