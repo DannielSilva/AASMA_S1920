@@ -105,7 +105,7 @@ public class Board {
 
 		for (int i = 0; i < agents; i++) {
 			Station station = new Station(i);
-			StationMode mode = new StationComunication(station);
+			StationMode mode = new StationSingleReceiveMemory(station);
 			station.setBehaviour(mode);
 			stations.add(station);
 
